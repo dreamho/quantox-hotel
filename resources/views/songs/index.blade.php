@@ -2,12 +2,12 @@
 
 @section('content')
 
-    <div><h2><span id="msg" style="color:green"></span></h2></div>
-    <h2>You are in the View: application/view/song/index.php (everything in this box comes from that file)</h2>
+    <div><h4><span id="msg" style="color:red"></span></h4></div>
+    <h2>Songs administration</h2>
     <!-- add song form -->
         <div id="save_form">
             <h3>Add a song</h3>
-            <form action="" method="POST">
+            <form action="" method="POST" id="save-form">
                 <label>Artist</label>
                 <input class="form-control" type="text" name="artist" value="" />
                 <label>Track</label>
@@ -88,20 +88,15 @@
                 },
                 success: function (data){
                     alert('Deleted');
-                    getSongs();
+                    $('#' + data).remove();
                 },
                 error: function(data) {
-                    var errors = data.responseJSON;
-                    for(var i in errors.errors){
-                        $('#msg').append("<p>"+errors.errors[i][0]+"</p>");
-                    }
-                    clearMsg();
+
                 }
             });
         }
         // Save song
         function saveSong(form){
-
             var song = {};
             song.artist = form.artist.value;
             song.track = form.track.value;
@@ -124,6 +119,7 @@
                     tr.append("<td><a onclick='deleteSong(" + song.id + ")' href='#'>Delete</a><td><a onclick='editForm(" + song.id + ")' href='#'>Edit</a></td>");
                     tr.attr('id', song.id);
                     $('#rows').append(tr);
+                    $('#save-form')[0].reset();
 
                 },
                 error: function(data) {
@@ -135,7 +131,6 @@
                 }
             });
         }
-
 
         // Fillling the form for editing
         function editForm(id){
@@ -157,11 +152,7 @@
                     form.length.value = song.length;
                 },
                 error: function(data) {
-                    var errors = data.responseJSON;
-                    for(var i in errors.errors){
-                        $('#msg').append("<p>"+errors.errors[i][0]+"</p>");
-                    }
-                    clearMsg();
+
                 }
             });
         }
@@ -186,10 +177,16 @@
                 success: function (data){
                     alert('Updated');
                     var song = data.data;
+                    var tr = $('#' + song.id).empty();
+                    for(var j in song){
+                        tr.append("<td>" + song[j] + "</td>");
+                    }
+                    tr.append("<td><a onclick='deleteSong(" + song.id + ")' href='#'>Delete</a><td><a onclick='editForm(" + song.id + ")' href='#'>Edit</a></td>");
+                    tr.attr('id', song.id);
+
                     $('#edit-form')[0].reset();
                     edit_form.style.display = "none";
                     save_form.style.display= "block";
-                    getSongs();
                 },
                 error: function(data) {
                     var errors = data.responseJSON;

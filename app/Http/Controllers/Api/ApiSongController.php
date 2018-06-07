@@ -41,7 +41,7 @@ class ApiSongController extends Controller
      * @param SaveEditSong $request
      * @return SongResource|JsonResponse
      */
-    public function saveSong(Request $request)
+    public function saveSong(SaveEditSong $request)
     {
         try {
             $song = new SongModel;
@@ -74,7 +74,7 @@ class ApiSongController extends Controller
      * @param SaveEditSong $request
      * @return SongResource|JsonResponse
      */
-    public function editSong(Request $request)
+    public function editSong(SaveEditSong $request)
     {
         try {
             $song = SongModel::find($request->id);

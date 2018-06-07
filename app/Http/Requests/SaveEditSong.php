@@ -13,7 +13,9 @@ class SaveEditSong extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        $user = auth()->user();
+        if($user->role == 'admin') return true;
+        else return false;
     }
 
     /**
@@ -26,7 +28,8 @@ class SaveEditSong extends FormRequest
         return [
             'artist' => 'required',
             'track' => 'required',
-            'link' => 'required'
+            'link' => 'required',
+            'length' => 'required'
         ];
     }
 }

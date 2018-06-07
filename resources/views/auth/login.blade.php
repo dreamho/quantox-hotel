@@ -25,11 +25,11 @@
             data: user,
             dataType: "json",
             success: function (data){
+                console.log(data);
                 window.localStorage.setItem('jwt-token', data.token);
-
+                //window.location="http://quantox-hotel.local/songs";
             }
         });
     }
-
 </script>
 @stop

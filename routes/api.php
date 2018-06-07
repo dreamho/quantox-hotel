@@ -29,3 +29,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::get('delete/{id}', 'Api\ApiSongController@delete');
 
 });
+
+Route::middleware('jwt.auth')->get('users', function(Request $request) {
+    return auth()->user();
+});
