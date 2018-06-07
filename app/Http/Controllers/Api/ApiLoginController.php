@@ -9,24 +9,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\UserLogin;
 use Validator;
 use JWTFactory;
 use JWTAuth;
-use App\User;
-use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class ApiLoginController
+ * @package App\Http\Controllers\Api
+ */
 class ApiLoginController extends Controller
 {
-    public function login(Request $request)
+    /**
+     * User authentication with validation and setting a token
+     * @param UserLogin $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login(UserLogin $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'password'=> 'required'
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
         $credentials = $request->only('email', 'password');
         try {
             if (! $token = JWTAuth::attempt($credentials)) {
@@ -37,10 +37,7 @@ class ApiLoginController extends Controller
         }
         JWTAuth::setToken($token);
         $user = JWTAuth::authenticate();
+        $user = new \App\Http\Resources\User($user);
         return response()->json(compact('token', 'user'));
-    }
-    public function showLoginForm()
-    {
-        return view('auth.login');
     }
 }

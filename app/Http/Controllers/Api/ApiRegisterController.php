@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRegister;
 use Illuminate\Http\Request;
 use App\User;
 use JWTFactory;
@@ -16,29 +17,27 @@ use JWTAuth;
 use Validator;
 use Response;
 
+/**
+ * Class ApiRegisterController
+ * @package App\Http\Controllers\Api
+ */
 class ApiRegisterController extends Controller
 {
-    public function showRegisterForm(){
-        return view('auth.register');
-    }
-    public function register(Request $request)
+    /**
+     * User registration with validation and setting a token
+     * @param UserRegister $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(UserRegister $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255|unique:users',
-            'name' => 'required',
-            'password'=> 'required'
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
         $user = User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => bcrypt($request->get('password')),
         ]);
-        //$user = User::first();
-        $token = JWTAuth::fromUser($user);
 
-        return Response::json(compact('token','user'));
+        $token = JWTAuth::fromUser($user);
+        $user = new \App\Http\Resources\User($user);
+        return response()->json(compact('token', 'user'));
     }
 }

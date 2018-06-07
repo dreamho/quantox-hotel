@@ -15,6 +15,6 @@ Route::get('/', function () {
     return view('home.index');
 });
 
-Route::get('songs', 'Api\ApiSongController@index');
-Route::get('register', 'Api\ApiRegisterController@showRegisterForm');
-Route::get('login', 'Api\ApiLoginController@showLoginForm');
+Route::get('songs', 'SongController@index');
+Route::get('register', 'AuthController@showRegisterForm');
+Route::get('login', 'AuthController@showLoginForm');

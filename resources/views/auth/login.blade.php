@@ -3,6 +3,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
+        <div id="msg" style="color:red"></div>
         <form method="POST" action="">
             <label>Email:</label><br>
             <input type="email" name="email" class="form-control"><br>
@@ -27,7 +28,18 @@
             success: function (data){
                 console.log(data);
                 window.localStorage.setItem('jwt-token', data.token);
-                //window.location="http://quantox-hotel.local/songs";
+                window.localStorage.setItem('role', data.user.role);
+                window.localStorage.setItem('user_id', data.user.id);
+                window.location="http://quantox-hotel.local/songs";
+            },
+            error: function(data) {
+                $('#msg').empty();
+                var errors = data.responseJSON;
+                for(var i in errors.errors){
+                    for(var j=0;j<errors.errors[i].length;j++){
+                        $('#msg').append("<p>"+errors.errors[i][j]+"</p>");
+                    }
+                }
             }
         });
     }

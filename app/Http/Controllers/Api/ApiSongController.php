@@ -12,18 +12,16 @@ use App\Http\Requests\SaveEditSong;
 use App\Http\Resources\Song as SongResource;
 use App\Http\Controllers\Controller;
 use App\Song as SongModel;
-use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Class ApiSongController
+ * @package App\Http\Controllers\Api
+ */
 class ApiSongController extends Controller
 {
-    public function index(){
-        return view('songs.index');
-    }
-    public function allSongs(){
-        return 'hello';
-    }
+
     /**
      * Return songs depending on status of logged user
      * If is admin returns all songs, if is regular user returns only his songs
@@ -91,13 +89,18 @@ class ApiSongController extends Controller
     }
 
     /**
-     * Delete song by id
-     * @param int $id
-     * @return int $id
+     * Delete a song by id
+     * @param $id
+     * @return JsonResponse
      */
     public function delete($id)
     {
-        SongModel::destroy($id);
-        return $id;
+        try{
+            SongModel::destroy($id);
+            return new JsonResponse($id);
+        } catch (\Exception $exception){
+            return new JsonResponse("Something went wrong");
+        }
+
     }
 }

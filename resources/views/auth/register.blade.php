@@ -3,6 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            <div id="msg" style="color:red"></div>
             <form method="POST" action="">
                 <label>Name:</label><br>
                 <input type="text" name="name" class="form-control"><br>
@@ -24,12 +25,24 @@
             user.password = form.password.value;
             $.ajax({
                 type: "POST",
-                url: "register",
+                url: "api/register",
                 data: user,
                 dataType: "json",
                 success: function (data){
+                    console.log(data);
                     window.localStorage.setItem('jwt-token', data.token);
+                    window.localStorage.setItem('role', data.user.role);
+                    window.localStorage.setItem('user_id', data.user.id);
                     window.location="http://quantox-hotel.local/songs";
+                },
+                error: function(data) {
+                    $('#msg').empty();
+                    var errors = data.responseJSON;
+                    for(var i in errors.errors){
+                        for(var j=0;j<errors.errors[i].length;j++){
+                            $('#msg').append("<p>"+errors.errors[i][j]+"</p>");
+                        }
+                    }
                 }
             });
         }

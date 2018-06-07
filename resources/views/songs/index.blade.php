@@ -16,7 +16,6 @@
                 <input class="form-control" type="text" name="link" value=""/>
                 <label>Length</label>
                 <input class="form-control" type="text" name="length" value=""/>
-                <input type="hidden" name="user_id" value="1">
                 <input class="btn btn-block btn-primary" style="margin:20px 0px;" type="button" onclick='saveSong(this.form)' name="submit_add_song" value="Save"/>
             </form>
         </div>
@@ -73,7 +72,8 @@
     <script type="text/javascript">
 
         var token = window.localStorage.getItem('jwt-token');
-        var tbody = document.getElementById('rows');
+        var role = window.localStorage.getItem('role');
+        var user_id = window.localStorage.getItem('user_id');
         var edit_form = document.getElementById('edit_form');
         var save_form = document.getElementById('save_form');
         var msg = document.getElementById('msg');
@@ -89,9 +89,6 @@
                 success: function (data){
                     alert('Deleted');
                     $('#' + data).remove();
-                },
-                error: function(data) {
-
                 }
             });
         }
@@ -102,7 +99,7 @@
             song.track = form.track.value;
             song.link = form.link.value;
             song.length = form.length.value;
-            song.user_id = form.user_id.value;
+            song.user_id = user_id;
             $.ajax({
                 type: "POST",
                 url: "api/savesong",
@@ -121,6 +118,9 @@
                     $('#rows').append(tr);
                     $('#save-form')[0].reset();
 
+                },
+                complete: function(xhr, status){
+                    if(xhr.status==403) $('#msg').append("<p>Unauthorised</p>");
                 },
                 error: function(data) {
                     var errors = data.responseJSON;
@@ -150,9 +150,6 @@
                     form.track.value = song.track;
                     form.link.value = song.link;
                     form.length.value = song.length;
-                },
-                error: function(data) {
-
                 }
             });
         }
@@ -187,6 +184,9 @@
                     $('#edit-form')[0].reset();
                     edit_form.style.display = "none";
                     save_form.style.display= "block";
+                },
+                complete: function(xhr, status){
+                    if(xhr.status==403) $('#msg').append("<p>Unauthorised</p>");
                 },
                 error: function(data) {
                     var errors = data.responseJSON;
