@@ -16,7 +16,7 @@ use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ApiSongController
+class ApiSongController extends Controller
 {
     public function index(){
         return view('songs.index');

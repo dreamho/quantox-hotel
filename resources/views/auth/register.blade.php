@@ -28,18 +28,7 @@
                 data: user,
                 dataType: "json",
                 success: function (data){
-                    alert('Saved');
-                    console.log(data);
-
-                },
-                error: function(data) {
-                    alert('error');
-                    var errors = data.responseJSON;
-                    console.log(errors);
-                    // for(var i in errors.errors){
-                    //     $('#msg').append("<p>"+errors.errors[i][0]+"</p>");
-                    // }
-                    // clearMsg();
+                    window.localStorage.setItem('jwt-token', data.token);
                 }
             });
         }
