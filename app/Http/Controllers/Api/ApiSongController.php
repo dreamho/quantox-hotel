@@ -47,7 +47,6 @@ class ApiSongController extends Controller
             $song->track = $request->track;
             $song->link = $request->link;
             $song->length = $request->length;
-            $song->user_id = $request->user_id;
             $song->save();
             return new SongResource($song);
         } catch (\Exception $exception) {
@@ -80,7 +79,6 @@ class ApiSongController extends Controller
             $song->track = $request->track;
             $song->link = $request->link;
             $song->length = $request->length;
-            $song->user_id = 1;
             $song->save();
             return new SongResource($song);
         } catch (\Exception $exception) {

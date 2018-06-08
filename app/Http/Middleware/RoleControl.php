@@ -22,7 +22,7 @@ class RoleControl
     }
         $actions = $request->route()->getAction();
         $roles = isset($actions['roles']) ? $actions['roles'] : null;
-        if($user->hasRole($roles) || !$roles){
+        if($user->hasAnyRole($roles) || !$roles){
             return $next($request);
         }
         return response('Permission denied');
