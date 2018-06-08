@@ -29,10 +29,9 @@
                 data: user,
                 dataType: "json",
                 success: function (data){
-                    console.log(data);
                     window.localStorage.setItem('jwt-token', data.token);
-                    window.localStorage.setItem('role', data.user.role);
-                    window.localStorage.setItem('user_id', data.user.id);
+                   // window.localStorage.setItem('role', data.data.role);
+                    window.localStorage.setItem('user_id', data.data.id);
                     window.location="http://quantox-hotel.local/songs";
                 },
                 error: function(data) {
@@ -46,6 +45,5 @@
                 }
             });
         }
-
     </script>
 @stop

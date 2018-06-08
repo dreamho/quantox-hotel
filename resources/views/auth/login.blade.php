@@ -26,11 +26,19 @@
             data: user,
             dataType: "json",
             success: function (data){
-                console.log(data);
                 window.localStorage.setItem('jwt-token', data.token);
-                window.localStorage.setItem('role', data.user.role);
-                window.localStorage.setItem('user_id', data.user.id);
+                //window.localStorage.setItem('role', data.data.role);
+                window.localStorage.setItem('user_id', data.data.id);
                 window.location="http://quantox-hotel.local/songs";
+            },
+            complete: function(xhr, status){
+                switch (xhr.status){
+                    case 401:
+                        $('#msg').append("<p>Invalid credentials</p>");
+                        break;
+                    case 500:
+                        $('#msg').append("<p>Token could not be created</p>");
+                }
             },
             error: function(data) {
                 $('#msg').empty();

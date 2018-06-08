@@ -13,9 +13,10 @@ class SaveEditSong extends FormRequest
      */
     public function authorize()
     {
-        $user = auth()->user();
-        if($user->role == 'admin') return true;
-        else return false;
+//        $user = auth()->user();
+//        if($user->role == 'admin') return true;
+//        else return false;
+        return true;
     }
 
     /**

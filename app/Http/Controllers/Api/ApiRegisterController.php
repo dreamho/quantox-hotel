@@ -10,8 +10,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRegister;
-use Illuminate\Http\Request;
-use App\User;
+use App\Http\Resources\User as UserResource;
+use App\Model\Role;
+use App\Model\User;
 use JWTFactory;
 use JWTAuth;
 use Validator;
@@ -26,7 +27,7 @@ class ApiRegisterController extends Controller
     /**
      * User registration with validation and setting a token
      * @param UserRegister $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
     public function register(UserRegister $request)
     {
@@ -35,9 +36,8 @@ class ApiRegisterController extends Controller
             'email' => $request->get('email'),
             'password' => bcrypt($request->get('password')),
         ]);
-
+        $user->roles()->attach(Role::where('name', 'guest')->first());
         $token = JWTAuth::fromUser($user);
-        $user = new \App\Http\Resources\User($user);
-        return response()->json(compact('token', 'user'));
+        return (new UserResource($user))->additional(['token' => $token]);
     }
 }

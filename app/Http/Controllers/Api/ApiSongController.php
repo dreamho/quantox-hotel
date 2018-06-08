@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\SaveEditSong;
 use App\Http\Resources\Song as SongResource;
 use App\Http\Controllers\Controller;
-use App\Song as SongModel;
+use App\Model\Song as SongModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -84,7 +84,7 @@ class ApiSongController extends Controller
             $song->save();
             return new SongResource($song);
         } catch (\Exception $exception) {
-            return new JsonResponse("Something went wrong");
+            return new JsonResponse("Something went wrong", 400);
         }
     }
 
@@ -99,7 +99,7 @@ class ApiSongController extends Controller
             SongModel::destroy($id);
             return new JsonResponse($id);
         } catch (\Exception $exception){
-            return new JsonResponse("Something went wrong");
+            return new JsonResponse("Something went wrong", 400);
         }
 
     }

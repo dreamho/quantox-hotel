@@ -21,7 +21,8 @@ Route::post('register', 'Api\ApiRegisterController@register');
 Route::post('login', 'Api\ApiLoginController@login');
 
 Route::middleware(['jwt.auth'])->group(function () {
-    Route::get('getsongs', 'Api\ApiSongController@getSongs');
+    Route::get('getbyid/{id}', ['uses' => 'Api\ApiSongController@getById', 'as' => 'songs', 'middleware' => 'roles', 'roles' => ['adminodddd']]);
+    //Route::get('getsongs', 'Api\ApiSongController@getSongs');
     Route::get('allsongs', 'Api\ApiSongController@allSongs');
     Route::post('savesong', 'Api\ApiSongController@saveSong');
     Route::post('editsong', 'Api\ApiSongController@editSong');

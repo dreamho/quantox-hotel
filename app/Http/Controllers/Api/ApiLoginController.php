@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLogin;
+use App\Http\Resources\User as UserResource;
 use Validator;
 use JWTFactory;
 use JWTAuth;
@@ -23,7 +24,7 @@ class ApiLoginController extends Controller
     /**
      * User authentication with validation and setting a token
      * @param UserLogin $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource|\Illuminate\Http\JsonResponse
      */
     public function login(UserLogin $request)
     {
@@ -37,7 +38,6 @@ class ApiLoginController extends Controller
         }
         JWTAuth::setToken($token);
         $user = JWTAuth::authenticate();
-        $user = new \App\Http\Resources\User($user);
-        return response()->json(compact('token', 'user'));
+        return (new UserResource($user))->additional(['token' => $token]);
     }
 }
