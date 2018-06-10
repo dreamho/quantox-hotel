@@ -87,9 +87,6 @@
     </div>
     <hr>
 
-    <script type="text/javascript">
-        console.log(window.localStorage.getItem('jwt-token'));
-    </script>
 
 @stop
 

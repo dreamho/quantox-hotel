@@ -19,11 +19,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('register', 'Api\ApiRegisterController@register');
 Route::post('login', 'Api\ApiLoginController@login');
+Route::get('getroles', 'Api\ApiRegisterController@getRoles');
 
 Route::middleware(['jwt.auth'])->group(function () {
 
+	Route::post('logout', 'Api\ApiLoginController@logout');
     Route::get('getbyid/{id}', ['uses' => 'Api\ApiSongController@getById', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
-    Route::get('getsongs', ['uses' => 'Api\ApiSongController@getSongs', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
+    Route::get('getsongs', ['uses' => 'Api\ApiSongController@getSongs', 'middleware' => 'roles', 'roles' => ['guest', 'admin', 'dj']]);
     Route::get('delete/{id}', ['uses' => 'Api\ApiSongController@delete', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
     Route::post('savesong', ['uses' => 'Api\ApiSongController@saveSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
     Route::post('editsong', ['uses' => 'Api\ApiSongController@editSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);

@@ -27,9 +27,9 @@
             dataType: "json",
             success: function (data){
                 window.localStorage.setItem('jwt-token', data.token);
-                //window.localStorage.setItem('role', data.data.role);
+                window.localStorage.setItem('name', data.data.name);
                 window.localStorage.setItem('user_id', data.data.id);
-                window.location="http://quantox-hotel.local/songs";
+                window.location = "/songs";
             },
             complete: function(xhr, status){
                 switch (xhr.status){

@@ -1,5 +1,9 @@
 @extends('app')
 
+@section('scripts')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+@stop
+
 @section('content')
 
     <div><h4><span id="msg" style="color:red"></span></h4></div>
@@ -37,18 +41,6 @@
 
     <!-- main content output -->
     <div>
-        <h3>Amount of songs (data from second model)</h3>
-        <div>
-            <strong></strong>
-        </div>
-        <h3>Amount of songs (via AJAX)</h3>
-        <div>
-            <button id="javascript-ajax-button">Click here to get the amount of songs via Ajax (will be displayed in
-                #javascript-ajax-result-box)
-            </button>
-            <div id="javascript-ajax-result-box"></div>
-        </div>
-        <hr>
         <h3>List of songs (data from first model)</h3>
         <table class="table">
             <thead>
@@ -72,7 +64,6 @@
     <script type="text/javascript">
 
         var token = window.localStorage.getItem('jwt-token');
-        var role = window.localStorage.getItem('role');
         var user_id = window.localStorage.getItem('user_id');
         var edit_form = document.getElementById('edit_form');
         var save_form = document.getElementById('save_form');
@@ -119,15 +110,21 @@
                     $('#save-form')[0].reset();
 
                 },
-                complete: function(xhr, status){
-                    if(xhr.status==403) $('#msg').append("<p>Unauthorised</p>");
-                },
-                error: function(data) {
-                    var errors = data.responseJSON;
-                    for(var i in errors.errors){
-                        $('#msg').append("<p>"+errors.errors[i][0]+"</p>");
+                error: function(xhr) {
+                    switch(xhr.status){
+                        case 403:
+                            var error = xhr.responseJSON.error;
+                            $('#msg').append("<p>"+error+"</p>");
+                            clearMsg();
+                        break;
+                        case 422:
+                            var errors = xhr.responseJSON.errors;
+                            for(var i in errors){
+                                $('#msg').append("<p>"+errors[i][0]+"</p>");
+                            }
+                            clearMsg();
+                        break; 
                     }
-                    clearMsg();
                 }
             });
         }
@@ -150,6 +147,11 @@
                     form.track.value = song.track;
                     form.link.value = song.link;
                     form.length.value = song.length;
+                },
+                error: function(xhr){
+                    var error = xhr.responseJSON.error;
+                    $('#msg').append("<p>"+error+"</p>");
+                    clearMsg();
                 }
             });
         }
@@ -185,15 +187,21 @@
                     edit_form.style.display = "none";
                     save_form.style.display= "block";
                 },
-                complete: function(xhr, status){
-                    if(xhr.status==403) $('#msg').append("<p>Unauthorised</p>");
-                },
-                error: function(data) {
-                    var errors = data.responseJSON;
-                    for(var i in errors.errors){
-                        $('#msg').append("<p>"+errors.errors[i][0]+"</p>");
+                error: function(xhr) {
+                    switch(xhr.status){
+                        case 403:
+                            var error = xhr.responseJSON.error;
+                            $('#msg').append("<p>"+error+"</p>");
+                            clearMsg();
+                        break;
+                        case 422:
+                            var errors = xhr.responseJSON.errors;
+                            for(var i in errors){
+                                $('#msg').append("<p>"+errors[i][0]+"</p>");
+                            }
+                            clearMsg();
+                        break; 
                     }
-                    clearMsg();
                 }
             });
         }
@@ -202,6 +210,7 @@
             $.ajax({
                 type: "GET",
                 url: "api/getsongs",
+                dataType: "json",
                 beforeSend: function(request) {
                     request.setRequestHeader("Authorization", "Bearer " + token);
                 },
@@ -219,6 +228,9 @@
                         tr.attr('id', song.id);
                         $('#rows').append(tr);
                     }
+                },
+                error: function(data){
+                    $('#msg').append("<p>"+data.responseJSON.error+"</p>");
                 }
 
             });
@@ -228,7 +240,7 @@
         function clearMsg(){
             setTimeout(function () {
                 msg.innerHTML = "";
-            }, 3000);
+            }, 5000);
         }
         getSongs();
     </script>

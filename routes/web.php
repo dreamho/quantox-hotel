@@ -18,3 +18,4 @@ Route::get('/', function () {
 Route::get('songs', 'SongController@index');
 Route::get('register', 'AuthController@showRegisterForm');
 Route::get('login', 'AuthController@showLoginForm');
+

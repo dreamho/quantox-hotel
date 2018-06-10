@@ -40,4 +40,9 @@ class ApiLoginController extends Controller
         $user = JWTAuth::authenticate();
         return (new UserResource($user))->additional(['token' => $token]);
     }
+
+    public function logout(){
+        JWTAuth::invalidate(JWTAuth::getToken());
+        return response()->json(['success' => 'Deleted successfully'], 200);   
+    }
 }
