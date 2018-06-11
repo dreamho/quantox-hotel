@@ -30,7 +30,7 @@ class SaveEditSong extends FormRequest
             'artist' => 'required|max:60',
             'track' => 'required|max:60',
             'link' => 'required|max:255',
-            'length' => 'required|integer'
+            'length' => 'required|numeric|max:300'
         ];
     }
 }

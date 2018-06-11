@@ -55,18 +55,6 @@ class ApiSongController extends Controller
     }
 
     /**
-     * Get a song by id to fill the form for updating data
-     * @param int $id
-     * @return SongResource
-     */
-    public function getById($id)
-    {
-        $song = SongModel::find($id);
-        return new SongResource($song);
-
-    }
-
-    /**
      * Updating song
      * @param SaveEditSong $request
      * @return SongResource|JsonResponse

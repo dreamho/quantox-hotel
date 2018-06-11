@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <div id="msg" style="color:red"></div>
+        <div id="error" style="color:red"></div>
         <form method="POST" action="">
             <label>Email:</label><br>
             <input type="email" name="email" class="form-control"><br>
@@ -31,22 +31,19 @@
                 window.localStorage.setItem('user_id', data.data.id);
                 window.location = "/songs";
             },
-            complete: function(xhr, status){
-                switch (xhr.status){
+            error: function(xhr) {
+                var error = xhr.responseJSON.error;
+                $('#error').empty();
+                switch (xhr.status) {
                     case 401:
-                        $('#msg').append("<p>Invalid credentials</p>");
-                        break;
-                    case 500:
-                        $('#msg').append("<p>Token could not be created</p>");
-                }
-            },
-            error: function(data) {
-                $('#msg').empty();
-                var errors = data.responseJSON;
-                for(var i in errors.errors){
-                    for(var j=0;j<errors.errors[i].length;j++){
-                        $('#msg').append("<p>"+errors.errors[i][j]+"</p>");
-                    }
+                        $('#error').append("<p>" + error + "</p>");
+                    break;
+                    case 422:
+                        var errors = xhr.responseJSON.errors;
+                        for (var i in errors) {
+                            $('#error').append("<p>" + errors[i][0] + "</p>");
+                        }
+                    break;
                 }
             }
         });

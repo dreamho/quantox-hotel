@@ -6,26 +6,12 @@
 
 @section('content')
 
-    <div><h4><span id="msg" style="color:red"></span></h4></div>
-    <h2>Songs administration</h2>
-    <!-- add song form -->
-        <div id="save_form">
-            <h3>Add a song</h3>
-            <form action="" method="POST" id="save-form">
-                <label>Artist</label>
-                <input class="form-control" type="text" name="artist" value="" />
-                <label>Track</label>
-                <input class="form-control" type="text" name="track" value="" />
-                <label>Link</label>
-                <input class="form-control" type="text" name="link" value=""/>
-                <label>Length</label>
-                <input class="form-control" type="text" name="length" value=""/>
-                <input class="btn btn-block btn-primary" style="margin:20px 0px;" type="button" onclick='saveSong(this.form)' name="submit_add_song" value="Save"/>
-            </form>
-        </div>
-    <div id="edit_form" class="box" style="display:none">
-        <h3>Edit song</h3>
-        <form action="" method="POST" id="edit-form">
+    <div id="error" style="color:red"></div>
+    <div id="success" style="color:green"></div>
+    <h2>Songs Administration</h2>
+
+    <div class="box">
+        <form action="" method="POST" id="form">
             <input class="form-control" type="hidden" name="id" value="" />
             <label>Artist</label>
             <input class="form-control" type="text" name="artist" value="" />
@@ -33,9 +19,10 @@
             <input class="form-control" type="text" name="track" value="" />
             <label>Link</label>
             <input class="form-control" type="text" name="link" value=""/>
-            <label>Length</label>
+            <label>Length(minutes)</label>
             <input class="form-control" type="text" name="length" value=""/>
-            <input class="btn btn-block btn-primary" style="margin:20px 0px;" type="button" onclick='editSong(this.form)' name="submit_add_song" value="Edit"/>
+            <input class="btn btn-primary" style="margin:20px 0px;" type="button" onclick='saveSong(this.form)' name="submit_save_song" value="Save"/>
+            <input class="btn btn-primary" style="margin:20px 0px;display:none" type="button" onclick='editSong(this.form)' name="submit_edit_song" value="Edit"/>
         </form>
     </div>
 
@@ -64,23 +51,24 @@
     <script type="text/javascript">
 
         var token = window.localStorage.getItem('jwt-token');
-        var user_id = window.localStorage.getItem('user_id');
-        var edit_form = document.getElementById('edit_form');
-        var save_form = document.getElementById('save_form');
-        var msg = document.getElementById('msg');
+        var error = document.getElementById('error');
+        var success = document.getElementById('success');
+
+        // Show Modal if token is not set
+        $( document ).ready(function() {
+            if(!token)
+            $('#popUpWindow').modal('show');
+        });
 
         // Delete song
         function deleteSong(id){
-            $.ajax({
-                type: "GET",
-                url: "api/delete/"+id,
-                beforeSend: function(request) {
-                    request.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function (data){
-                    alert('Deleted');
-                    $('#' + data).remove();
-                }
+            if(!confirm("Are you sure that you want to delete this song?")){
+                return;
+            }
+            request('api/delete/'+id, 'DELETE', null, function (data){
+                $('#success').append("<p>Deleted successfully</p>");
+                $('#' + data).remove();
+                clearMsg();
             });
         }
         // Save song
@@ -90,70 +78,30 @@
             song.track = form.track.value;
             song.link = form.link.value;
             song.length = form.length.value;
-            song.user_id = user_id;
-            $.ajax({
-                type: "POST",
-                url: "api/savesong",
-                data: song,
-                dataType: "json",
-                beforeSend: function(request) {
-                    request.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function (data){
-                    alert('Saved');
-                    var song = data.data;
-                    var tr = $("<tr />");
-                    tr.append("<td>"+ song.id +"</td><td>"+ song.artist +"</td><td>"+ song.track +"</td><td>"+ song.link +"</td><td>"+ song.length +"</td>");
-                    tr.append("<td><a onclick='deleteSong(" + song.id + ")' href='#'>Delete</a><td><a onclick='editForm(" + song.id + ")' href='#'>Edit</a></td>");
-                    tr.attr('id', song.id);
-                    $('#rows').append(tr);
-                    $('#save-form')[0].reset();
-
-                },
-                error: function(xhr) {
-                    switch(xhr.status){
-                        case 403:
-                            var error = xhr.responseJSON.error;
-                            $('#msg').append("<p>"+error+"</p>");
-                            clearMsg();
-                        break;
-                        case 422:
-                            var errors = xhr.responseJSON.errors;
-                            for(var i in errors){
-                                $('#msg').append("<p>"+errors[i][0]+"</p>");
-                            }
-                            clearMsg();
-                        break; 
-                    }
-                }
+            request('api/savesong', 'POST', song, function (data){
+                $('#success').append("<p>Saved successfully</p>");
+                var song = data.data;
+                var tr = $("<tr />");
+                tr.append("<td>"+ song.id +"</td><td>"+ song.artist +"</td><td>"+ song.track +"</td><td>"+ song.link +"</td><td>"+ song.length +"</td>");
+                tr.append("<td><a onclick='deleteSong(" + song.id + ")' href='#'>Delete</a><td><a onclick='editForm(" + song.id + ")' href='#'>Edit</a></td>");
+                tr.attr('id', song.id);
+                $('#rows').append(tr);
+                $('#form')[0].reset();
+                clearMsg();
             });
         }
 
         // Fillling the form for editing
         function editForm(id){
-            edit_form.style.display = "block";
-            save_form.style.display = "none";
-            $.ajax({
-                type: "GET",
-                url: "api/getbyid/"+id,
-                beforeSend: function(request) {
-                    request.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function (data){
-                    var song = data.data;
-                    var form = $('#edit-form')[0];
-                    form.id.value = song.id;
-                    form.artist.value = song.artist;
-                    form.track.value = song.track;
-                    form.link.value = song.link;
-                    form.length.value = song.length;
-                },
-                error: function(xhr){
-                    var error = xhr.responseJSON.error;
-                    $('#msg').append("<p>"+error+"</p>");
-                    clearMsg();
-                }
-            });
+            $('[name="submit_save_song"]').css('display', 'none');
+            $('[name="submit_edit_song"]').css('display', 'block');
+            var form = $('#form')[0];
+            var data = $('#' +id).children();
+            form.id.value = data[0].innerHTML;
+            form.artist.value = data[1].innerHTML;
+            form.track.value = data[2].innerHTML;
+            form.link.value = data[3].innerHTML;
+            form.length.value = data[4].innerHTML;
         }
 
         // Edit song
@@ -165,82 +113,48 @@
             song.track = form.track.value;
             song.link = form.link.value;
             song.length = form.length.value;
-            $.ajax({
-                type: "POST",
-                url: "api/editsong",
-                data: song,
-                dataType: "json",
-                beforeSend: function(request) {
-                    request.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function (data){
-                    alert('Updated');
-                    var song = data.data;
-                    var tr = $('#' + song.id).empty();
-                    for(var j in song){
+
+            request('api/editsong', 'PUT', song, function (data) {
+                $('#success').append("<p>Updated successfully</p>");
+                var song = data.data;
+                var tr = $('#' + song.id).empty();
+                for(var j in song){
+                    tr.append("<td>" + song[j] + "</td>");
+                }
+                tr.append("<td><a onclick='deleteSong(" + song.id + ")' href='#'>Delete</a><td><a onclick='editForm(" + song.id + ")' href='#'>Edit</a></td>");
+                tr.attr('id', song.id);
+                $('#form')[0].reset();
+                $('[name="submit_save_song"]').css('display', 'block');
+                $('[name="submit_edit_song"]').css('display', 'none');
+                clearMsg();
+            });
+        }
+
+        // Get all songs
+        function getSongs() {
+            request('api/getsongs', 'GET', null, function (data) {
+                console.log(data);
+                $("#rows").html("");
+                var songs = data.data;
+                for (var i = 0; i < songs.length; i++) {
+                    var tr = $("<tr />");
+                    var song = songs[i];
+                    for (var j in song) {
                         tr.append("<td>" + song[j] + "</td>");
                     }
                     tr.append("<td><a onclick='deleteSong(" + song.id + ")' href='#'>Delete</a><td><a onclick='editForm(" + song.id + ")' href='#'>Edit</a></td>");
                     tr.attr('id', song.id);
-
-                    $('#edit-form')[0].reset();
-                    edit_form.style.display = "none";
-                    save_form.style.display= "block";
-                },
-                error: function(xhr) {
-                    switch(xhr.status){
-                        case 403:
-                            var error = xhr.responseJSON.error;
-                            $('#msg').append("<p>"+error+"</p>");
-                            clearMsg();
-                        break;
-                        case 422:
-                            var errors = xhr.responseJSON.errors;
-                            for(var i in errors){
-                                $('#msg').append("<p>"+errors[i][0]+"</p>");
-                            }
-                            clearMsg();
-                        break; 
-                    }
+                    $('#rows').append(tr);
                 }
-            });
-        }
-        // Get all songs
-        function getSongs(){
-            $.ajax({
-                type: "GET",
-                url: "api/getsongs",
-                dataType: "json",
-                beforeSend: function(request) {
-                    request.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function (data){
-                    console.log(data);
-                    $("#rows").html("");
-                    var songs = data.data;
-                    for(var i=0;i<songs.length;i++) {
-                        var tr = $("<tr />");
-                        var song = songs[i];
-                        for(var j in song){
-                            tr.append("<td>" + song[j] + "</td>");
-                        }
-                        tr.append("<td><a onclick='deleteSong(" + song.id + ")' href='#'>Delete</a><td><a onclick='editForm(" + song.id + ")' href='#'>Edit</a></td>");
-                        tr.attr('id', song.id);
-                        $('#rows').append(tr);
-                    }
-                },
-                error: function(data){
-                    $('#msg').append("<p>"+data.responseJSON.error+"</p>");
-                }
-
             });
         }
 
         // Clear message
         function clearMsg(){
             setTimeout(function () {
-                msg.innerHTML = "";
-            }, 5000);
+                success.innerHTML = "";
+                error.innerHTML = "";
+            }, 3000);
         }
         getSongs();
     </script>

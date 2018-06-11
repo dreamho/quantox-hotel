@@ -18,7 +18,7 @@ class CreateSongsTable extends Migration
             $table->string('artist', 60);
             $table->string('track', 60);
             $table->string('link');
-            $table->integer('length');
+            $table->decimal('length', 4, 2);
             $table->timestamps();
         });
     }
