@@ -17,6 +17,11 @@ class RoleTableSeeder extends Seeder
         $role_guest->description = 'Regular user';
         $role_guest->save();
 
+        $role_party_maker = new Role();
+        $role_party_maker->name = 'party_maker';
+        $role_party_maker->description = 'User with privileges to create parties';
+        $role_party_maker->save();
+
         $role_dj = new Role();
         $role_dj->name = 'dj';
         $role_dj->description = 'User with privileges on songs table';

@@ -27,10 +27,10 @@ class SaveEditSong extends FormRequest
     public function rules()
     {
         return [
-            'artist' => 'required',
-            'track' => 'required',
-            'link' => 'required',
-            'length' => 'required'
+            'artist' => 'required|max:60',
+            'track' => 'required|max:60',
+            'link' => 'required|max:255',
+            'length' => 'required|integer'
         ];
     }
 }
