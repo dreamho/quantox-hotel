@@ -41,7 +41,9 @@ class ApiRegisterController extends Controller
         $token = JWTAuth::fromUser($user);
         return (new UserResource($user))->additional(['token' => $token]);
     }
-    public function getRoles(){
+
+    public function getRoles()
+    {
         $roles = Role::all();
         return RoleResource::collection($roles);
     }
