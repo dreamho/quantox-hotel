@@ -5,6 +5,10 @@ namespace App\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * Class User
+ * @package App\Model
+ */
 class User extends Authenticatable
 {
     use Notifiable;
@@ -34,7 +38,6 @@ class User extends Authenticatable
     public function roles(){
         return $this->belongsToMany('App\Model\Role', 'user_role', 'user_id', 'role_id');
     }
-
 
     public function hasAnyRole($roles){
         if(is_array($roles)){

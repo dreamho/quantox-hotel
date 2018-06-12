@@ -65,7 +65,7 @@
             if(!confirm("Are you sure that you want to delete this song?")){
                 return;
             }
-            request('api/delete/'+id, 'DELETE', null, function (data){
+            request('api/songs/'+id, 'DELETE', null, function (data){
                 $('#success').append("<p>Deleted successfully</p>");
                 $('#' + data).remove();
                 clearMsg();
@@ -78,7 +78,7 @@
             song.track = form.track.value;
             song.link = form.link.value;
             song.length = form.length.value;
-            request('api/savesong', 'POST', song, function (data){
+            request('api/songs', 'POST', song, function (data){
                 $('#success').append("<p>Saved successfully</p>");
                 var song = data.data;
                 var tr = $("<tr />");
@@ -114,7 +114,7 @@
             song.link = form.link.value;
             song.length = form.length.value;
 
-            request('api/editsong', 'PUT', song, function (data) {
+            request('api/songs/' + song.id, 'PUT', song, function (data) {
                 $('#success').append("<p>Updated successfully</p>");
                 var song = data.data;
                 var tr = $('#' + song.id).empty();
@@ -132,7 +132,7 @@
 
         // Get all songs
         function getSongs() {
-            request('api/getsongs', 'GET', null, function (data) {
+            request('api/songs', 'GET', null, function (data) {
                 console.log(data);
                 $("#rows").html("");
                 var songs = data.data;

@@ -20,13 +20,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('register', 'Api\ApiRegisterController@register');
 Route::post('login', 'Api\ApiLoginController@login');
 Route::get('getroles', 'Api\ApiRegisterController@getRoles');
+Route::post('logout', 'Api\ApiLoginController@logout');
 
 Route::middleware(['jwt.auth'])->group(function () {
 
-	Route::post('logout', 'Api\ApiLoginController@logout');
-    Route::get('getsongs', ['uses' => 'Api\ApiSongController@getSongs', 'middleware' => 'roles', 'roles' => ['guest', 'admin', 'dj']]);
-    Route::delete('delete/{id}', ['uses' => 'Api\ApiSongController@delete', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
-    Route::post('savesong', ['uses' => 'Api\ApiSongController@saveSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
-    Route::put('editsong', ['uses' => 'Api\ApiSongController@editSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
+    Route::get('songs', ['uses' => 'Api\ApiSongController@getSongs', 'middleware' => 'roles', 'roles' => ['guest', 'admin', 'dj']]);
+    Route::delete('songs/{id}', ['uses' => 'Api\ApiSongController@deleteSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
+    Route::post('songs', ['uses' => 'Api\ApiSongController@saveSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
+    Route::put('songs/{id}', ['uses' => 'Api\ApiSongController@updateSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
+    Route::post('parties', ['uses' => 'Api\ApiPartyController@saveParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
+
+
+
 
 });

@@ -59,10 +59,10 @@ class ApiSongController extends Controller
      * @param SaveEditSong $request
      * @return SongResource|JsonResponse
      */
-    public function editSong(SaveEditSong $request)
+    public function updateSong($id, SaveEditSong $request)
     {
         try {
-            $song = SongModel::find($request->id);
+            $song = SongModel::find($id);
             $song->artist = $request->artist;
             $song->track = $request->track;
             $song->link = $request->link;
@@ -79,7 +79,7 @@ class ApiSongController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function delete($id)
+    public function deleteSong($id)
     {
         try{
             SongModel::destroy($id);

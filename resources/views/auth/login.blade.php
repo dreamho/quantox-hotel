@@ -29,7 +29,7 @@
                 window.localStorage.setItem('jwt-token', data.token);
                 window.localStorage.setItem('name', data.data.name);
                 window.localStorage.setItem('user_id', data.data.id);
-                window.location = "/songs";
+                window.location = "/";
             },
             error: function(xhr) {
                 var error = xhr.responseJSON.error;

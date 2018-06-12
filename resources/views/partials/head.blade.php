@@ -36,7 +36,7 @@
                 window.localStorage.setItem('jwt-token', data.token);
                 window.localStorage.setItem('name', data.data.name);
                 window.localStorage.setItem('user_id', data.data.id);
-                window.location = "/songs";
+                window.location = "/";
             });
         }
 
@@ -64,6 +64,9 @@
             if (token) {
                 return token;
             }
+            var token = window.localStorage.getItem('jwt-token');
+            return token;
+            showLoginModal();
         }
 
         function request(url, method, data, successCallback) {

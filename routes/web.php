@@ -11,11 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('home.index');
-});
-
+Route::get('/', 'HomeController@index');
 Route::get('songs', 'SongController@index');
 Route::get('register', 'AuthController@showRegisterForm');
 Route::get('login', 'AuthController@showLoginForm');
+Route::get('party', 'HomeController@showPartyForm');
 

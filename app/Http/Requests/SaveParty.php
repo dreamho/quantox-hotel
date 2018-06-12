@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SaveEditSong extends FormRequest
+class SaveParty extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,14 @@ class SaveEditSong extends FormRequest
     public function rules()
     {
         return [
-            'artist' => 'required|max:60',
-            'track' => 'required|max:60',
-            'link' => 'required|max:255',
-            'length' => 'required|numeric|max:300'
+            'name' => 'required|string|max:60',
+            'description' => 'required|string|max:255',
+            'date' => 'required|date',
+            'tags' => 'required|max:128',
+            'capacity' => 'required|integer',
+            'length' => 'required|numeric|max:50',
+            'image' => 'required|max:1024',
+            'user_id' => 'required|integer'
         ];
     }
 }
