@@ -21,9 +21,10 @@ class CreatePartiesTable extends Migration
             $table->string('tags', 128);
             $table->integer('capacity');
             $table->decimal('length', 4, 2);
-            $table->text('image', 1024);
-            $table->integer('user_id');
+            $table->string('image', 1024);
+            $table->unsignedInteger('user_id');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

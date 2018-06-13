@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveParty;
+use App\Model\Song;
 use Illuminate\Http\JsonResponse;
 use App\Model\Party;
 use App\Http\Resources\Party as PartyResource;
@@ -41,7 +42,8 @@ class ApiPartyController extends Controller
             $party->user_id = $request->user_id;
             $party->save();
 
-            
+
+
 
             return new PartyResource($party);
         } catch (\Exception $exception) {
@@ -53,4 +55,5 @@ class ApiPartyController extends Controller
         $parties = Party::where('date', '>=', $current_date)->orderBy('date', 'asc')->get();
         return PartyResource::collection($parties);
     }
+
 }

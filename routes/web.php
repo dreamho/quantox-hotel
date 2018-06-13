@@ -17,3 +17,4 @@ Route::get('register', 'AuthController@showRegisterForm');
 Route::get('login', 'AuthController@showLoginForm');
 Route::get('party', 'HomeController@showPartyForm');
 
+Route::get('test', 'HomeController@test');

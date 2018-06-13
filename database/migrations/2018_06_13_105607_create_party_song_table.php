@@ -15,8 +15,10 @@ class CreatePartySongTable extends Migration
     {
         Schema::create('party_song', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('party_id');
-            $table->integer('song_id');
+            $table->unsignedInteger('party_id');
+            $table->unsignedInteger('song_id');
+            $table->foreign('party_id')->references('id')->on('parties');
+            $table->foreign('song_id')->references('id')->on('songs');
         });
     }
 
