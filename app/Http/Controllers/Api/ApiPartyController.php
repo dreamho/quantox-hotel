@@ -40,13 +40,17 @@ class ApiPartyController extends Controller
             $party->image = $imageName;
             $party->user_id = $request->user_id;
             $party->save();
+
+            
+
             return new PartyResource($party);
         } catch (\Exception $exception) {
             return new JsonResponse("Something went wrong", 400);
         }
     }
     public function getParties(){
-        $parties = Party::all();
+        $current_date = date('Y-m-d');
+        $parties = Party::where('date', '>=', $current_date)->orderBy('date', 'asc')->get();
         return PartyResource::collection($parties);
     }
 }

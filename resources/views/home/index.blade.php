@@ -60,6 +60,13 @@
 
     </div>
     <hr>
+
+    <div class="row" id="parties">
+
+    </div>
+
+    <hr>
+
     <div class="row">
         <div class="col-md-6"><h3>Contact us</h3></div>
         <div class="col-md-6"><h3>Visit us</h3></div>
@@ -91,24 +98,6 @@
             <h5>Address: Kneza Mihaila 112</h5>
         </div>
     </div>
-    <hr>
-
-    <div class="row" id="parties">
-        {{--        <div class="col-sm-6 col-md-6">
-                    <div class="thumbnail">
-                        <img src="/images/1.jpg" alt="...">
-                        <div class="caption">
-                            <h3>Party Name</h3>
-                            <p><small>14-06-2018</small></p>
-                            <p>Capacity: 100</p>
-                            <p>Duration(hours): 3</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, aperiam atque debitis deserunt doloribus, error harum hic illo in ipsa iusto laborum nemo praesentium quaerat quidem quos similique tenetur totam?</p>
-                            <p><a href="#" class="btn btn-primary" role="button">Join us</a></p>
-                            <p>#party #hotel #music</p>
-                        </div>
-                    </div>
-                </div>--}}
-    </div>
 
     <script type="text/javascript">
 
@@ -121,8 +110,8 @@
                 console.log(data);
                 var parties = data.data;
                 for (var i = 0; i < parties.length; i++) {
-                    var div = $('<div class="col-md-12"></div>');
-                    div.append('<div class="thumbnail"><img src="images/2.jpg"><div class="caption"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p><a href="#" class="btn btn-primary" role="button">Join us</a></p><p>' + parties[i].tags + '</p></div></div>');
+                    var div = $('<div class="col-md-6"></div>');
+                    div.append('<div class="thumbnail"><img src="images/'+ parties[i].image +'"><div class="caption"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p><a href="#" class="btn btn-primary" role="button">Join us</a></p><p>' + parties[i].tags + '</p></div></div>');
                     $('#parties').append(div);
                 }
 

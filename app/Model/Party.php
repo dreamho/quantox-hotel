@@ -10,5 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Party extends Model
 {
-    //
+    public function songs(){
+        return $this->belongsToMany('App\Model\Song', 'party_song', 'party_id', 'song_id');
+    }
 }
