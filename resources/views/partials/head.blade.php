@@ -101,18 +101,12 @@
                     var error = xhr.responseJSON.error;
                     switch(xhr.status){
                         case 400:
-                            $('#error').append("<p>"+error+"</p>");
-                            break;
                         case 401:
-                            if(error!='token_expired'){
-                                $('#error').append("<p>"+error+"</p>");
-                            }
-                            else{
-                                window.localStorage.removeItem("jwt-token");
-                                window.localStorage.removeItem("name");
-                                window.localStorage.removeItem("user_id");
-                                window.location = "/";
-                            }
+                            $('#error').append("<p>"+error+"</p>");
+                            window.localStorage.removeItem("jwt-token");
+                            window.localStorage.removeItem("name");
+                            window.localStorage.removeItem("user_id");
+                            showLoginModal();
                             break;
                         case 403:
                             var error = xhr.responseJSON.error;
