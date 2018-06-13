@@ -36,7 +36,21 @@
                 window.localStorage.setItem('jwt-token', data.token);
                 window.localStorage.setItem('name', data.data.name);
                 window.localStorage.setItem('user_id', data.data.id);
-                window.location = "/";
+
+                switch(window.localStorage.getItem('user_id')){
+                    case "1":
+                        window.location = "/";
+                        break;
+                    case "2":
+                        window.location = "/party";
+                        break;
+                    case "3":
+                        window.location = "/songs";
+                        break;
+                    default:
+                        window.location = "/";
+                        break;
+                }
             });
         }
 
@@ -45,7 +59,7 @@
             $.ajax({
                 type: "POST",
                 url: "/api/logout",
-                dataType: 'json',
+                dataType: null,
                 beforeSend: function(request) {
                     request.setRequestHeader("Authorization", "Bearer " + window.localStorage.getItem('jwt-token'));
                 },
@@ -90,7 +104,15 @@
                             $('#error').append("<p>"+error+"</p>");
                             break;
                         case 401:
-                            $('#error').append("<p>"+error+"</p>");
+                            if(error!='token_expired'){
+                                $('#error').append("<p>"+error+"</p>");
+                            }
+                            else{
+                                window.localStorage.removeItem("jwt-token");
+                                window.localStorage.removeItem("name");
+                                window.localStorage.removeItem("user_id");
+                                window.location = "/";
+                            }
                             break;
                         case 403:
                             var error = xhr.responseJSON.error;

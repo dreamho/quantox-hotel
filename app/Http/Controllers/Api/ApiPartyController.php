@@ -45,4 +45,8 @@ class ApiPartyController extends Controller
             return new JsonResponse("Something went wrong", 400);
         }
     }
+    public function getParties(){
+        $parties = Party::all();
+        return PartyResource::collection($parties);
+    }
 }

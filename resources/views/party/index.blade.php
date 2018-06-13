@@ -77,7 +77,15 @@
                             $('#error').append("<p>"+error+"</p>");
                             break;
                         case 401:
-                            $('#error').append("<p>"+error+"</p>");
+                            if(error!='token_expired'){
+                                $('#error').append("<p>"+error+"</p>");
+                            }
+                            else{
+                                window.localStorage.removeItem("jwt-token");
+                                window.localStorage.removeItem("name");
+                                window.localStorage.removeItem("user_id");
+                                window.location = "/";
+                            }
                             break;
                         case 403:
                             var error = xhr.responseJSON.error;

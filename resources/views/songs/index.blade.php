@@ -28,7 +28,7 @@
 
     <!-- main content output -->
     <div>
-        <h3>List of songs (data from first model)</h3>
+        <h3>List of songs</h3>
         <table class="table">
             <thead>
             <tr>

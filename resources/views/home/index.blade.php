@@ -1,4 +1,9 @@
 @extends('app')
+
+@section('scripts')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+@stop
+
 @section('content')
     <div class="row">
 
@@ -64,7 +69,7 @@
         <div class="col-md-6">
             <form>
                 <label>Your name</label><br>
-                <input type="text" name="name" class="form-control" ><br>
+                <input type="text" name="name" class="form-control"><br>
                 <label>Your Email</label><br>
                 <input type="email" name="email" class="form-control"><br>
                 <label>Your Phone</label><br>
@@ -74,7 +79,8 @@
             </form>
         </div>
         <div class="col-md-6" id="map">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2869.779476370681!2d20.900138215847058!3d44.005284479110856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4757211a385cd97d%3A0x954fc66e4e527eed!2sQuantox+Technology!5e0!3m2!1sen!2srs!4v1528207994113" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2869.779476370681!2d20.900138215847058!3d44.005284479110856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4757211a385cd97d%3A0x954fc66e4e527eed!2sQuantox+Technology!5e0!3m2!1sen!2srs!4v1528207994113"
+                    width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
         </div>
 
     </div>
@@ -87,23 +93,74 @@
     </div>
     <hr>
 
+    <div class="row" id="parties">
+        {{--        <div class="col-sm-6 col-md-6">
+                    <div class="thumbnail">
+                        <img src="/images/1.jpg" alt="...">
+                        <div class="caption">
+                            <h3>Party Name</h3>
+                            <p><small>14-06-2018</small></p>
+                            <p>Capacity: 100</p>
+                            <p>Duration(hours): 3</p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, aperiam atque debitis deserunt doloribus, error harum hic illo in ipsa iusto laborum nemo praesentium quaerat quidem quos similique tenetur totam?</p>
+                            <p><a href="#" class="btn btn-primary" role="button">Join us</a></p>
+                            <p>#party #hotel #music</p>
+                        </div>
+                    </div>
+                </div>--}}
+    </div>
+
+    <script type="text/javascript">
+
+        $.ajax({
+            url: "api/parties",
+            type: "GET",
+            data: null,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                var parties = data.data;
+                for (var i = 0; i < parties.length; i++) {
+                    var div = $('<div class="col-md-12"></div>');
+                    div.append('<div class="thumbnail"><img src="images/2.jpg"><div class="caption"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p><a href="#" class="btn btn-primary" role="button">Join us</a></p><p>' + parties[i].tags + '</p></div></div>');
+                    $('#parties').append(div);
+                }
+
+            },
+            error: function (xhr) {
+                $('#error').empty();
+                var error = xhr.responseJSON.error;
+                switch (xhr.status) {
+                    case 400:
+                        $('#error').append("<p>" + error + "</p>");
+                        break;
+                    case 401:
+                        if (error != 'token_expired') {
+                            $('#error').append("<p>" + error + "</p>");
+                        }
+                        else {
+                            window.localStorage.removeItem("jwt-token");
+                            window.localStorage.removeItem("name");
+                            window.localStorage.removeItem("user_id");
+                            window.location = "/";
+                        }
+                        break;
+                    case 403:
+                        var error = xhr.responseJSON.error;
+                        $('#error').append("<p>" + error + "</p>");
+                        showLoginModal();
+                        break;
+                    case 422:
+                        var errors = xhr.responseJSON.errors;
+                        for (var i in errors) {
+                            $('#error').append("<p>" + errors[i][0] + "</p>");
+                        }
+                        break;
+                }
+            }
+        });
+
+    </script>
 
 @stop
 
-@section('scripts')
-    {{--<script>--}}
-    {{--// Initialize and add the map--}}
-    {{--function initMap() {--}}
-    {{--// The location of Uluru--}}
-    {{--var uluru = {lat: 44.0052845, lng: 20.9001382};--}}
-    {{--// The map, centered at Uluru--}}
-    {{--var map = new google.maps.Map(--}}
-    {{--document.getElementById('map'), {zoom: 17, center: uluru});--}}
-    {{--// The marker, positioned at Uluru--}}
-    {{--var marker = new google.maps.Marker({position: uluru, map: map});--}}
-    {{--}--}}
-    {{--</script>--}}
-    {{--<script async defer--}}
-    {{--src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJa_GOv1s97tPO4NJLvVxj3hHySHZILtM&callback=initMap">--}}
-    {{--</script>--}}
-@stop

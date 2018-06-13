@@ -29,7 +29,21 @@
                 window.localStorage.setItem('jwt-token', data.token);
                 window.localStorage.setItem('name', data.data.name);
                 window.localStorage.setItem('user_id', data.data.id);
-                window.location = "/";
+
+                switch(window.localStorage.getItem('user_id')){
+                    case "1":
+                        window.location = "/";
+                    break;
+                    case "2":
+                        window.location = "/party";
+                    break;
+                    case "3":
+                        window.location = "/songs";
+                    break;
+                    default:
+                        window.location = "/";
+                    break;
+                }
             },
             error: function(xhr) {
                 var error = xhr.responseJSON.error;

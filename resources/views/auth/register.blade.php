@@ -16,7 +16,7 @@
                 <label>Password:</label><br>
                 <input type="password" name="password" class="form-control"><br>
                 <label>Confirm password:</label><br>
-                <input type="password" name="confirm_password" class="form-control"><br>
+                <input type="password" name="password_confirmation" class="form-control"><br>
                 <select name="role" class="form-control"><option>Choose role:</option></select><br><br>
                 <input onclick='SubmitForm(this.form)' type="button" name="btn-submit" value="Submit" class="btn btn-info btn-block">
             </form>
@@ -44,7 +44,7 @@
             user.name = form.name.value;
             user.email = form.email.value;
             user.password = form.password.value;
-            user.confirm_password = form.confirm_password.value;
+            user.password_confirmation = form.password_confirmation.value;
             user.role = form.role.value;
             $.ajax({
                 type: "POST",
@@ -55,7 +55,7 @@
                 window.localStorage.setItem('jwt-token', data.token);
                 window.localStorage.setItem('name', data.data.name);
                 window.localStorage.setItem('user_id', data.data.id);
-                window.location = "/songs";
+                window.location = "/";
                 },
                 error: function(xhr) {
                     var error = xhr.responseJSON.error;

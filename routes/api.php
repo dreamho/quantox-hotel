@@ -20,10 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('register', 'Api\ApiRegisterController@register');
 Route::post('login', 'Api\ApiLoginController@login');
 Route::get('getroles', 'Api\ApiRegisterController@getRoles');
-Route::post('logout', 'Api\ApiLoginController@logout');
+Route::get('parties', 'Api\ApiPartyController@getParties');
 
 Route::middleware(['jwt.auth'])->group(function () {
 
+    Route::post('logout', 'Api\ApiLoginController@logout');
     Route::get('songs', ['uses' => 'Api\ApiSongController@getSongs', 'middleware' => 'roles', 'roles' => ['guest', 'admin', 'dj']]);
     Route::delete('songs/{id}', ['uses' => 'Api\ApiSongController@deleteSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
     Route::post('songs', ['uses' => 'Api\ApiSongController@saveSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
