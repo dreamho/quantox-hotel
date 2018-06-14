@@ -29,20 +29,30 @@ class HomeController extends Controller
 
         $songs = Song::inRandomOrder()->get();
 
-        $total = 1.5 * 60;
+        $total = 0.5 * 60;
         $duration = 0;
 
         $array = [];
-        foreach($songs as $song){
 
+        for($i = 0; $i < count($songs); $i++){
             if($duration <= $total){
-                $duration += $song->length;
+                $duration += $songs[$i]->length;
                 if($duration > $total){
                     break;
                 }
-                $array[] = $song;
+                $array[] = $songs[$i];
             }
         }
+//        foreach($songs as $song){
+//
+//            if($duration <= $total){
+//                $duration += $song->length;
+//                if($duration > $total){
+//                    break;
+//                }
+//                $array[] = $song;
+//            }
+//        }
 
 
 

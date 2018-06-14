@@ -12,7 +12,6 @@
 
     <div class="box">
         <form action="" method="POST" id="form-save" enctype="multipart/form-data">
-            <input class="form-control" type="hidden" name="id" value="" />
             <label>Name</label>
             <input class="form-control" type="text" name="name" value="" />
             <label>Description</label>
@@ -52,7 +51,6 @@
             fd.append('capacity', $('[name="capacity"]').val());
             fd.append('tags', $('[name="tags"]').val());
             fd.append('image', document.getElementById('img').files[0]);
-            fd.append('user_id', user_id);
 
             $.ajax({
                 url: "api/parties",
@@ -78,7 +76,6 @@
                             $('#error').append("<p>"+error+"</p>");
                             window.localStorage.removeItem("jwt-token");
                             window.localStorage.removeItem("name");
-                            window.localStorage.removeItem("user_id");
                             showLoginModal();
                             break;
                         case 403:

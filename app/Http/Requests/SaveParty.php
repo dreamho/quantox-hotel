@@ -30,8 +30,7 @@ class SaveParty extends FormRequest
             'tags' => 'required|max:128',
             'capacity' => 'required|integer',
             'length' => 'required|numeric|max:50',
-            'image' => 'required|max:1024',
-            'user_id' => 'required|integer'
+            'image' => 'required|max:1024'
         ];
     }
 }

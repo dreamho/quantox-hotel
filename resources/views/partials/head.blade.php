@@ -33,9 +33,13 @@
             user.email = $(form.find('[name=email]')).val();
             user.password = $(form.find('[name=password]')).val();
             request('/api/login', 'POST', user, function (data){
-                window.localStorage.setItem('jwt-token', data.token);
-                window.localStorage.setItem('name', data.data.name);
-                window.localStorage.setItem('user_id', data.data.id);
+                var token = data.token ? data.token : null;
+                var name = data.data.name ? data.data.name : data.data.email;
+                var user_id = data.data.id ? data.data.id : null;
+
+                window.localStorage.setItem('jwt-token', token);
+                window.localStorage.setItem('name', name);
+                window.localStorage.setItem('user_id', user_id);
 
                 switch(window.localStorage.getItem('user_id')){
                     case "1":
@@ -69,6 +73,17 @@
                         window.localStorage.removeItem("name");
                         window.localStorage.removeItem("user_id");
                         window.location = "/";
+                    }
+                },
+                error: function(xhr) {
+                    switch(xhr.status){
+                        case 400:
+                        case 401:
+                            window.localStorage.removeItem("jwt-token");
+                            window.localStorage.removeItem("name");
+                            window.localStorage.removeItem("user_id");
+                            window.location = "/";
+                            break;
                     }
                 }
             });

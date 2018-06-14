@@ -39,7 +39,7 @@ class ApiPartyController extends Controller
             $party->capacity = $request->capacity;
             $party->length = $request->length;
             $party->image = $imageName;
-            $party->user_id = $request->user_id;
+            $party->user_id = $request->user()->id;
             $party->save();
 
 

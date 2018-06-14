@@ -52,9 +52,14 @@
                 data: user,
                 dataType: "json",
                 success: function (data){
-                window.localStorage.setItem('jwt-token', data.token);
-                window.localStorage.setItem('name', data.data.name);
-                window.localStorage.setItem('user_id', data.data.id);
+                var token = data.token ? data.token : null;
+                var name = data.data.name ? data.data.name : data.data.email;
+                var user_id = data.data.id ? data.data.id : null;
+
+                window.localStorage.setItem('jwt-token', token);
+                window.localStorage.setItem('name', name);
+                window.localStorage.setItem('user_id', user_id);
+
                 window.location = "/";
                 },
                 error: function(xhr) {
