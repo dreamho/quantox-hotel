@@ -42,6 +42,10 @@ class ApiRegisterController extends Controller
         return (new UserResource($user))->additional(['token' => $token]);
     }
 
+    /**
+     * Get all user roles
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function getRoles()
     {
         $roles = Role::all();

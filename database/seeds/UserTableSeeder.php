@@ -4,6 +4,9 @@ use Illuminate\Database\Seeder;
 use App\Model\User;
 use App\Model\Role;
 
+/**
+ * Class UserTableSeeder
+ */
 class UserTableSeeder extends Seeder
 {
     /**

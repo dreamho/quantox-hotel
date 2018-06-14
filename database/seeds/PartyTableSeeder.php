@@ -2,6 +2,9 @@
 
 use Illuminate\Database\Seeder;
 
+/**
+ * Class PartyTableSeeder
+ */
 class PartyTableSeeder extends Seeder
 {
     /**

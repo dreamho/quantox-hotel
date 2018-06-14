@@ -39,6 +39,11 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Model\Role', 'user_role', 'user_id', 'role_id');
     }
 
+    /**
+     * Checking does user has any role
+     * @param $roles
+     * @return bool
+     */
     public function hasAnyRole($roles){
         if(is_array($roles)){
             foreach($roles as $role){

@@ -41,6 +41,10 @@ class ApiLoginController extends Controller
         return (new UserResource($user))->additional(['token' => $token]);
     }
 
+    /**
+     * User logout and invalidating token
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout(){
         JWTAuth::invalidate(JWTAuth::getToken());
         return response()->json(['success' => 'Logged out successfully'], 200);

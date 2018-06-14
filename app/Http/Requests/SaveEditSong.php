@@ -4,6 +4,10 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class SaveEditSong
+ * @package App\Http\Requests
+ */
 class SaveEditSong extends FormRequest
 {
     /**

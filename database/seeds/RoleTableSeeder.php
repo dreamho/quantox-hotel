@@ -3,6 +3,9 @@
 use Illuminate\Database\Seeder;
 use App\Model\Role;
 
+/**
+ * Class RoleTableSeeder
+ */
 class RoleTableSeeder extends Seeder
 {
     /**

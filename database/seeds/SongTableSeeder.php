@@ -3,6 +3,9 @@
 use Illuminate\Database\Seeder;
 use App\Model\Song;
 
+/**
+ * Class SongTableSeeder
+ */
 class SongTableSeeder extends Seeder
 {
     /**

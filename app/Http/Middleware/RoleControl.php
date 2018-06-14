@@ -6,6 +6,10 @@ use Closure;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class RoleControl
+ * @package App\Http\Middleware
+ */
 class RoleControl
 {
     /**

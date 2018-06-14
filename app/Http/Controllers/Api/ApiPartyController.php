@@ -50,6 +50,11 @@ class ApiPartyController extends Controller
             return new JsonResponse("Something went wrong", 400);
         }
     }
+
+    /**
+     * Get all parties by date in ascending order
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function getParties(){
         $current_date = date('Y-m-d');
         $parties = Party::where('date', '>=', $current_date)->orderBy('date', 'asc')->get();
