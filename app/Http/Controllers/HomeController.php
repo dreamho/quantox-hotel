@@ -27,14 +27,24 @@ class HomeController extends Controller
     }
     public function test(){
 
+        //$songs = Song::all();
         $songs = Song::inRandomOrder()->get();
 
-        $total = 0.5 * 60;
+        $total = 2.5 * 60;
         $duration = 0;
 
         $array = [];
+        $previous_party_song = 'Natural Blues';
 
-        for($i = 0; $i < count($songs); $i++){
+        $start = $songs[0]->track == $previous_party_song ? 1 : 0;
+
+        $array = $this->createPlaylist($start, $songs, $previous_party_song, $duration, $total, $array);
+
+
+        return view('home.test', ['songs' => $array['songs'], 'duration' => $array['duration']]);
+    }
+    public function createPlaylist($start, $songs, $previous_party_song, $duration, $total, $array){
+        for($i = $start; $i < count($songs); $i++){
             if($duration <= $total){
                 $duration += $songs[$i]->length;
                 if($duration > $total){
@@ -43,20 +53,9 @@ class HomeController extends Controller
                 $array[] = $songs[$i];
             }
         }
-//        foreach($songs as $song){
-//
-//            if($duration <= $total){
-//                $duration += $song->length;
-//                if($duration > $total){
-//                    break;
-//                }
-//                $array[] = $song;
-//            }
-//        }
-
-
-
-
-        return view('home.test', ['songs' => $array, 'duration' => $duration]);
+        if($duration  < $total){
+           return $this->createPlaylist($start = 0, $songs, $previous_party_song, $duration, $total, $array);
+        }
+        return ['songs' => $array, 'duration' => $duration];
     }
 }

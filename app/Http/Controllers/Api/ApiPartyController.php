@@ -28,9 +28,13 @@ class ApiPartyController extends Controller
      * @return PartyResource|JsonResponse
      */
     public function saveParty(SaveParty $request){
-        $imageName = time().'.'.$request->image->getClientOriginalExtension();
-        $request->image->move(public_path('/images'), $imageName);
+
+        $previous_party = Party::latest()->first();
+        $previous_party_song = $previous_party ? $previous_party->songs()->latest()->first() : null;
+
         try {
+            $imageName = time().'.'.$request->image->getClientOriginalExtension();
+            $request->image->move(public_path('/images'), $imageName);
             $party = new Party();
             $party->name = $request->name;
             $party->description = $request->description;
@@ -42,9 +46,20 @@ class ApiPartyController extends Controller
             $party->user_id = $request->user()->id;
             $party->save();
 
+            $songs = Song::inRandomOrder()->get();
+            $total = $party->length * 60;
+            $duration = 0;
+            $array = [];
+            if(isset($previous_party_song)){
+                $start = ($songs[0]->track == $previous_party_song->track) ? 1 : 0;
+            }else{
+                $start = 0;
+            }
+            $song_list = $this->createPlaylist($start, $songs, $duration, $total, $array);
 
-
-
+            foreach($song_list as $song){
+                $party->songs()->attach($song->id);
+            }
             return new PartyResource($party);
         } catch (\Exception $exception) {
             return new JsonResponse("Something went wrong", 400);
@@ -61,4 +76,33 @@ class ApiPartyController extends Controller
         return PartyResource::collection($parties);
     }
 
+    /**
+     * Creating list of songs for the party
+     * @param $start
+     * @param $songs
+     * @param $duration
+     * @param $total
+     * @param $array
+     * @param string $last_song
+     * @return array
+     */
+    public function createPlaylist($start, $songs, $duration, $total, $array, $last_song = ""){
+        for($i = $start; $i < count($songs); $i++){
+            if(($last_song!="") && ($i==0) && ($last_song->track == $songs[$i]->track)){
+                continue;
+            }
+            if($duration <= $total){
+                $duration += $songs[$i]->length;
+                if($duration > $total){
+                    break;
+                }
+                $array[] = $songs[$i];
+            }
+        }
+        if($duration  < $total){
+            $last_song = $array[count($array)-1];
+            return $this->createPlaylist($start = 0, $songs, $duration, $total, $array, $last_song);
+        }
+        return $array;
+    }
 }
