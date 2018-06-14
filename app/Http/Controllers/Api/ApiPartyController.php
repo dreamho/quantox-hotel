@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EditParty;
 use App\Http\Requests\SaveParty;
 use App\Model\Song;
 use Illuminate\Http\JsonResponse;
@@ -27,13 +28,14 @@ class ApiPartyController extends Controller
      * @param SaveParty $request
      * @return PartyResource|JsonResponse
      */
-    public function saveParty(SaveParty $request){
+    public function saveParty(SaveParty $request)
+    {
 
         $previous_party = Party::latest()->first();
         $previous_party_song = $previous_party ? $previous_party->songs()->latest()->first() : null;
 
         try {
-            $imageName = time().'.'.$request->image->getClientOriginalExtension();
+            $imageName = time() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path('/images'), $imageName);
             $party = new Party();
             $party->name = $request->name;
@@ -50,14 +52,14 @@ class ApiPartyController extends Controller
             $total = $party->length * 60;
             $duration = 0;
             $array = [];
-            if(isset($previous_party_song)){
+            if (isset($previous_party_song)) {
                 $start = ($songs[0]->track == $previous_party_song->track) ? 1 : 0;
-            }else{
+            } else {
                 $start = 0;
             }
             $song_list = $this->createPlaylist($start, $songs, $duration, $total, $array);
 
-            foreach($song_list as $song){
+            foreach ($song_list as $song) {
                 $party->songs()->attach($song->id);
             }
             return new PartyResource($party);
@@ -70,7 +72,8 @@ class ApiPartyController extends Controller
      * Get all parties by date in ascending order
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getParties(){
+    public function getParties()
+    {
         $current_date = date('Y-m-d');
         $parties = Party::where('date', '>=', $current_date)->orderBy('date', 'asc')->get();
         return PartyResource::collection($parties);
@@ -86,23 +89,47 @@ class ApiPartyController extends Controller
      * @param string $last_song
      * @return array
      */
-    public function createPlaylist($start, $songs, $duration, $total, $array, $last_song = ""){
-        for($i = $start; $i < count($songs); $i++){
-            if(($last_song!="") && ($i==0) && ($last_song->track == $songs[$i]->track)){
+    public function createPlaylist($start, $songs, $duration, $total, $array, $last_song = "")
+    {
+        for ($i = $start; $i < count($songs); $i++) {
+            if (($last_song != "") && ($i == 0) && ($last_song->track == $songs[$i]->track)) {
                 continue;
             }
-            if($duration <= $total){
+            if ($duration <= $total) {
                 $duration += $songs[$i]->length;
-                if($duration > $total){
+                if ($duration > $total) {
                     break;
                 }
                 $array[] = $songs[$i];
             }
         }
-        if($duration  < $total){
-            $last_song = $array[count($array)-1];
+        if ($duration < $total) {
+            $last_song = $array[count($array) - 1];
             return $this->createPlaylist($start = 0, $songs, $duration, $total, $array, $last_song);
         }
         return $array;
+    }
+
+    /**
+     * Update party description, tags and image
+     * @param $id
+     * @param EditParty $request
+     * @return PartyResource|JsonResponse
+     */
+    public function updateParty($id, EditParty $request)
+    {
+        try {
+            $imageName = time() . '.' . $request->image->getClientOriginalExtension();
+            $request->image->move(public_path('/images'), $imageName);
+            $party = Party::find($id);
+            $party->description = $request->description;
+            $party->tags = $request->tags;
+            $party->image = $imageName;
+            $party->user_id = $request->user()->id;
+            $party->save();
+            return new PartyResource($party);
+        } catch (\Exception $exception) {
+            return new JsonResponse("Something went wrong", 400);
+        }
     }
 }

@@ -11,26 +11,32 @@
     <h2>Parties Organization</h2>
 
     <div class="box">
-        <form action="" method="POST" id="form-save" enctype="multipart/form-data">
-            <label>Name</label>
+        <form action="" method="POST" id="form-party" enctype="multipart/form-data">
+            <input class="form-control" type="hidden" name="id" value="" />
+            <label for="name">Name</label>
             <input class="form-control" type="text" name="name" value="" />
-            <label>Description</label>
+            <label  for="description">Description</label>
             <textarea name="description" class="form-control"></textarea>
-            <label>Date</label>
+            <label for="date">Date</label>
             <input class="form-control" type="date" name="date" value=""/>
-            <label>Length(hours)</label>
+            <label for="length">Length(hours)</label>
             <input class="form-control" type="text" name="length" value=""/>
-            <label>Capacity</label>
+            <label for="capacity">Capacity</label>
             <input class="form-control" type="text" name="capacity" value=""/>
             <label>Tags</label>
             <input class="form-control" type="text" name="tags" value=""/>
-            <label>Image</label>
+            <label for="image">Image</label>
             <input type="file" name="image" value="" id="img"/>
 
-            <input class="btn btn-primary" style="margin:20px 0px;" type="button" onclick="saveParty(this.form)" name="submit_save_song" value="Save"/>
+            <input class="btn btn-primary" style="margin:20px 0px;" type="button" onclick="saveParty()" name="submit_save_party" value="Save"/>
+            <input class="btn btn-primary" style="margin:20px 0px;display:none" type="button" onclick="editParty()" name="submit_edit_party" value="Edit"/>
         </form>
+    </div>
+    <hr>
 
+    <h3>List of parties</h3>
 
+    <div class="row" id="parties">
 
     </div>
 
@@ -41,8 +47,7 @@
                 $('#popUpWindow').modal('show');
         });
 
-        function saveParty(form){
-            var user_id = window.localStorage.getItem('user_id');
+        function saveParty(){
             var fd = new FormData();
             fd.append('name', $('[name="name"]').val());
             fd.append('description', $('[name="description"]').val());
@@ -65,6 +70,7 @@
                 success: function(data)
                 {
                     $('#error').empty();
+                    //$('#form-party')[0].reset();
                     console.log(data);
                 },
                 error: function(xhr) {
@@ -93,6 +99,133 @@
                 }
             });
         }
+
+        function getParty(id){
+            $('#form-party')[0].reset();
+            var data = $('#' + id).children();
+            $('[name="description"]').val(data[4].innerHTML);
+            $('[name="tags"]').val(data[5].innerHTML);
+            $('[name="id"]').val(id);
+
+            $('label[for=name], [name="name"]').hide();
+            $('label[for=length], [name="length"]').hide();
+            $('label[for=capacity], [name="capacity"]').hide();
+            $('label[for=date], [name="date"]').hide();
+            $('[name="submit_edit_party"]').css('display', 'block');
+            $('[name="submit_save_party"]').css('display', 'none');
+        }
+
+        function editParty(){
+            var fd = new FormData();
+            var id = $('[name="id"]').val();
+            fd.append('description', $('[name="description"]').val());
+            fd.append('tags', $('[name="tags"]').val());
+            fd.append('image', document.getElementById('img').files[0]);
+
+            $.ajax({
+                url: "api/parties/" + id,
+                type: "POST",
+                data: fd,
+                contentType: false,
+                cache: false,
+                processData:false,
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Bearer " + getToken());
+                },
+                success: function(data)
+                {
+                    var party = data.data;
+                    $('#error').empty();
+                    $('#form-party')[0].reset();
+                    $('label[for=name], [name="name"]').show();
+                    $('label[for=length], [name="length"]').show();
+                    $('label[for=capacity], [name="capacity"]').show();
+                    $('label[for=date], [name="date"]').show();
+                    $('[name="submit_edit_party"]').css('display', 'none');
+                    $('[name="submit_save_party"]').css('display', 'block');
+
+                    var div = $('#' + party.id).children();
+                    div[4].innerHTML = party.description;
+                    div[5].innerHTML = party.tags;
+                    $("#image-party").attr("src", 'images/' + party.image);
+
+
+
+                },
+                error: function(xhr) {
+                    $('#error').empty();
+                    var error = xhr.responseJSON.error;
+                    switch(xhr.status){
+                        case 400:
+                        case 401:
+                            $('#error').append("<p>"+error+"</p>");
+                            window.localStorage.removeItem("jwt-token");
+                            window.localStorage.removeItem("name");
+                            showLoginModal();
+                            break;
+                        case 403:
+                            var error = xhr.responseJSON.error;
+                            $('#error').append("<p>"+error+"</p>");
+                            showLoginModal();
+                            break;
+                        case 422:
+                            var errors = xhr.responseJSON.errors;
+                            for(var i in errors){
+                                $('#error').append("<p>"+errors[i][0]+"</p>");
+                            }
+                            break;
+                    }
+                }
+            });
+        }
+
+        $.ajax({
+            url: "api/parties",
+            type: "GET",
+            data: null,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                var parties = data.data;
+                for (var i = 0; i < parties.length; i++) {
+                    var div = $('<div class="col-md-4"></div>');
+                    div.append('<div class="thumbnail"><img id="image-party" src="images/'+ parties[i].image +'"><div class="caption" id="'+parties[i].id+'"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p>' + parties[i].tags + '</p><p><a href="#" onclick="getParty('+ parties[i].id +')" class="btn btn-primary" role="button">Edit</a></p></div></div>');
+                    $('#parties').append(div);
+                }
+
+            },
+            error: function (xhr) {
+                $('#error').empty();
+                var error = xhr.responseJSON.error;
+                switch (xhr.status) {
+                    case 400:
+                        $('#error').append("<p>" + error + "</p>");
+                        break;
+                    case 401:
+                        if (error != 'token_expired') {
+                            $('#error').append("<p>" + error + "</p>");
+                        }
+                        else {
+                            window.localStorage.removeItem("jwt-token");
+                            window.localStorage.removeItem("name");
+                            window.localStorage.removeItem("user_id");
+                            window.location = "/";
+                        }
+                        break;
+                    case 403:
+                        var error = xhr.responseJSON.error;
+                        $('#error').append("<p>" + error + "</p>");
+                        showLoginModal();
+                        break;
+                    case 422:
+                        var errors = xhr.responseJSON.errors;
+                        for (var i in errors) {
+                            $('#error').append("<p>" + errors[i][0] + "</p>");
+                        }
+                        break;
+                }
+            }
+        });
 
     </script>
 

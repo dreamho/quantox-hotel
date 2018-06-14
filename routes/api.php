@@ -30,6 +30,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::post('songs', ['uses' => 'Api\ApiSongController@saveSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
     Route::put('songs/{id}', ['uses' => 'Api\ApiSongController@updateSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
     Route::post('parties', ['uses' => 'Api\ApiPartyController@saveParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
+    Route::post('parties/{id}', ['uses' => 'Api\ApiPartyController@updateParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
 
 
 
