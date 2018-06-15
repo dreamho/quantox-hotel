@@ -35,5 +35,26 @@ class SongTableSeeder extends Seeder
         $song->link = 'runnaway';
         $song->length = 4.5;
         $song->save();
+
+        $song = new Song();
+        $song->artist = 'Toto';
+        $song->track = 'Africa';
+        $song->link = 'africa';
+        $song->length = 5.5;
+        $song->save();
+
+        $song = new Song();
+        $song->artist = 'Lana Del Ray';
+        $song->track = 'Summer Wine';
+        $song->link = 'summer_wine';
+        $song->length = 4;
+        $song->save();
+
+        $song = new Song();
+        $song->artist = 'Black';
+        $song->track = 'Wonderfull Life';
+        $song->link = 'wonderfull_life';
+        $song->length = 5.5;
+        $song->save();
     }
 }

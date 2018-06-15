@@ -33,6 +33,7 @@ class ApiPartyController extends Controller
 
         $previous_party = Party::latest()->first();
         $previous_party_song = $previous_party ? $previous_party->songs()->latest()->first() : null;
+        //return $previous_party_song;
 
         try {
             $imageName = time() . '.' . $request->image->getClientOriginalExtension();
@@ -69,11 +70,15 @@ class ApiPartyController extends Controller
     }
 
     /**
-     * Get all parties by date in ascending order
+     *
+     * @param $date
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getParties()
+    public function getParties($date=null)
     {
+        if(!isset($date)){
+            return PartyResource::collection(Party::all());
+        }
         $current_date = date('Y-m-d');
         $parties = Party::where('date', '>=', $current_date)->orderBy('date', 'asc')->get();
         return PartyResource::collection($parties);
@@ -122,6 +127,9 @@ class ApiPartyController extends Controller
             $imageName = time() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path('/images'), $imageName);
             $party = Party::find($id);
+            if(file_exists('images/' . $party->image)) {
+                unlink('images/' . $party->image);
+            }
             $party->description = $request->description;
             $party->tags = $request->tags;
             $party->image = $imageName;
@@ -129,6 +137,18 @@ class ApiPartyController extends Controller
             $party->save();
             return new PartyResource($party);
         } catch (\Exception $exception) {
+            return new JsonResponse("Something went wrong", 400);
+        }
+    }
+
+    public function deleteParty($id){
+        try{
+            $party = Party::find($id);
+            $party->songs()->detach();
+            $party->delete();
+            //Party::destroy($id);
+            return new JsonResponse($id);
+        } catch (\Exception $exception){
             return new JsonResponse("Something went wrong", 400);
         }
     }

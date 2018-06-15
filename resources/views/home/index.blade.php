@@ -102,7 +102,7 @@
     <script type="text/javascript">
 
         $.ajax({
-            url: "api/parties",
+            url: "api/parties/data",
             type: "GET",
             data: null,
             dataType: 'json',

@@ -15,6 +15,6 @@ class Party extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function songs(){
-        return $this->belongsToMany('App\Model\Song', 'party_song', 'party_id', 'song_id');
+        return $this->belongsToMany('App\Model\Song', 'party_song', 'party_id', 'song_id')->withTimestamps();
     }
 }

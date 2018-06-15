@@ -69,9 +69,13 @@
                 },
                 success: function(data)
                 {
-                    $('#error').empty();
-                    //$('#form-party')[0].reset();
-                    console.log(data);
+                    $('#form-party')[0].reset();
+                    $('#success').append("<p>Saved successfully</p>");
+                    var party = data.data;
+                    var div = $('<div class="col-md-4" id="party-'+ party.id +'"></div>');
+                    div.append('<div class="thumbnail"><img id="image-'+ party.id +'" src="images/'+ party.image +'"><div class="caption" id="'+party.id+'"><h3>' + party.name + '</h3><p>Date: ' + party.date + '</p><p>Capacity: ' + party.capacity + '</p><p>Duration(hours): ' + party.length + '</p><p>' + party.description + '</p><p>' + party.tags + '</p><p><a href="#" onclick="getParty('+ party.id +')" class="btn btn-primary" role="button">Edit</a> <a href="#" class="btn btn-default" role="button">Delete</a></p></div></div>');
+                    $('#parties').append(div);
+                    clearMsg();
                 },
                 error: function(xhr) {
                     $('#error').empty();
@@ -134,8 +138,8 @@
                 },
                 success: function(data)
                 {
+                    $('#success').append("<p>Updated successfully</p>");
                     var party = data.data;
-                    $('#error').empty();
                     $('#form-party')[0].reset();
                     $('label[for=name], [name="name"]').show();
                     $('label[for=length], [name="length"]').show();
@@ -147,10 +151,8 @@
                     var div = $('#' + party.id).children();
                     div[4].innerHTML = party.description;
                     div[5].innerHTML = party.tags;
-                    $("#image-party").attr("src", 'images/' + party.image);
-
-
-
+                    $("#image-" + party.id).attr("src", 'images/' + party.image);
+                    clearMsg();
                 },
                 error: function(xhr) {
                     $('#error').empty();
@@ -179,6 +181,25 @@
             });
         }
 
+        function deleteParty(id){
+            $.ajax({
+                url: "api/parties/" + id,
+                type: "DELETE",
+                data: null,
+                dataType: 'json',
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Bearer " + getToken());
+                },
+                success: function (data) {
+                    console.log(data);
+                    $('#success').append("<p>Deleted successfully</p>");
+                    $('#party-' + data).remove();
+                    clearMsg();
+                }
+            });
+
+        }
+
         $.ajax({
             url: "api/parties",
             type: "GET",
@@ -188,8 +209,8 @@
                 console.log(data);
                 var parties = data.data;
                 for (var i = 0; i < parties.length; i++) {
-                    var div = $('<div class="col-md-4"></div>');
-                    div.append('<div class="thumbnail"><img id="image-party" src="images/'+ parties[i].image +'"><div class="caption" id="'+parties[i].id+'"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p>' + parties[i].tags + '</p><p><a href="#" onclick="getParty('+ parties[i].id +')" class="btn btn-primary" role="button">Edit</a></p></div></div>');
+                    var div = $('<div class="col-md-4" id="party-'+ parties[i].id +'"></div>');
+                    div.append('<div class="thumbnail"><img id="image-'+ parties[i].id +'" src="images/'+ parties[i].image +'"><div class="caption" id="'+parties[i].id+'"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p>' + parties[i].tags + '</p><p><a href="#" onclick="getParty('+ parties[i].id +')" class="btn btn-primary" role="button">Edit</a> <a href="#" onclick="deleteParty('+ parties[i].id +')" class="btn btn-default" role="button">Delete</a></p></div></div>');
                     $('#parties').append(div);
                 }
 
@@ -217,15 +238,16 @@
                         $('#error').append("<p>" + error + "</p>");
                         showLoginModal();
                         break;
-                    case 422:
-                        var errors = xhr.responseJSON.errors;
-                        for (var i in errors) {
-                            $('#error').append("<p>" + errors[i][0] + "</p>");
-                        }
-                        break;
                 }
             }
         });
+
+        function clearMsg(){
+            setTimeout(function () {
+                success.innerHTML = "";
+                error.innerHTML = "";
+            }, 3000);
+        }
 
     </script>
 

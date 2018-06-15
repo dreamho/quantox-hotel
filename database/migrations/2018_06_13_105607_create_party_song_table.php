@@ -20,6 +20,7 @@ class CreatePartySongTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('party_id');
             $table->unsignedInteger('song_id');
+            $table->timestamps();
             $table->foreign('party_id')->references('id')->on('parties');
             $table->foreign('song_id')->references('id')->on('songs');
         });

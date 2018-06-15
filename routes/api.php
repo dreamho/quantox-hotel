@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('register', 'Api\ApiRegisterController@register');
 Route::post('login', 'Api\ApiLoginController@login');
 Route::get('getroles', 'Api\ApiRegisterController@getRoles');
-Route::get('parties', 'Api\ApiPartyController@getParties');
+Route::get('parties/{date?}', 'Api\ApiPartyController@getParties');
 
 Route::middleware(['jwt.auth'])->group(function () {
 
@@ -31,8 +31,6 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('songs/{id}', ['uses' => 'Api\ApiSongController@updateSong', 'middleware' => 'roles', 'roles' => ['admin', 'dj']]);
     Route::post('parties', ['uses' => 'Api\ApiPartyController@saveParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
     Route::post('parties/{id}', ['uses' => 'Api\ApiPartyController@updateParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
-
-
-
+    Route::delete('parties/{id}', ['uses' => 'Api\ApiPartyController@deleteParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
 
 });
