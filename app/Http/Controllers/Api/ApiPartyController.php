@@ -124,15 +124,17 @@ class ApiPartyController extends Controller
     public function updateParty($id, EditParty $request)
     {
         try {
-            $imageName = time() . '.' . $request->image->getClientOriginalExtension();
-            $request->image->move(public_path('/images'), $imageName);
             $party = Party::find($id);
-            if(file_exists('images/' . $party->image)) {
-                unlink('images/' . $party->image);
-            }
             $party->description = $request->description;
             $party->tags = $request->tags;
-            $party->image = $imageName;
+            if(isset($request->image)){
+                if(file_exists('images/' . $party->image)) {
+                    unlink('images/' . $party->image);
+                }
+                $imageName = time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('/images'), $imageName);
+                $party->image = $imageName;
+            }
             $party->user_id = $request->user()->id;
             $party->save();
             return new PartyResource($party);
@@ -151,5 +153,13 @@ class ApiPartyController extends Controller
         } catch (\Exception $exception){
             return new JsonResponse("Something went wrong", 400);
         }
+    }
+
+    public function join($party)
+    {
+        // join user
+//        $party = Party::find($party);
+//        $user = auth()->user();
+//        $party->users()->attach();
     }
 }

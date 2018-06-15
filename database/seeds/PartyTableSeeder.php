@@ -21,7 +21,7 @@ class PartyTableSeeder extends Seeder
         $party->tags = 'party,hotel,fun';
         $party->capacity = 200;
         $party->length = 2.5;
-        $party->image = '1528979008.jpg';
+        $party->image = '1529062033.jpg';
         $party->user_id = 2;
         $party->save();
         $party->songs()->attach(1);
@@ -38,7 +38,7 @@ class PartyTableSeeder extends Seeder
         $party->tags = 'party,hotel,fun';
         $party->capacity = 200;
         $party->length = 2.5;
-        $party->image = '1528986160.jpg';
+        $party->image = '1529061918.jpg';
         $party->user_id = 2;
         $party->save();
         $party->songs()->attach(3);

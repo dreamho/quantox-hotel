@@ -124,7 +124,9 @@
             var id = $('[name="id"]').val();
             fd.append('description', $('[name="description"]').val());
             fd.append('tags', $('[name="tags"]').val());
-            fd.append('image', document.getElementById('img').files[0]);
+            if(document.getElementById('img').files[0]){
+                fd.append('image', document.getElementById('img').files[0]);
+            }
 
             $.ajax({
                 url: "api/parties/" + id,

@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLogin;
 use App\Http\Resources\User as UserResource;
+use App\Model\Party;
 use Validator;
 use JWTFactory;
 use JWTAuth;
@@ -30,7 +31,7 @@ class ApiLoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
         try {
-            if (! $token = JWTAuth::attempt($credentials)) {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'invalid_credentials'], 401);
             }
         } catch (JWTException $e) {
@@ -45,7 +46,8 @@ class ApiLoginController extends Controller
      * User logout and invalidating token
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout(){
+    public function logout()
+    {
         JWTAuth::invalidate(JWTAuth::getToken());
         return response()->json(['success' => 'Logged out successfully'], 200);
     }

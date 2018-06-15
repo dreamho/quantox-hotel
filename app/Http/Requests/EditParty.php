@@ -26,7 +26,7 @@ class EditParty extends FormRequest
         return [
             'description' => 'required|string|max:255',
             'tags' => 'required|max:128',
-            'image' => 'required|image|max:1024'
+            'image' => 'image|max:1024'
         ];
     }
 }

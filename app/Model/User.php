@@ -39,6 +39,10 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Model\Role', 'user_role', 'user_id', 'role_id');
     }
 
+    public function parties()
+    {
+        return $this->belongsToMany('App\Model\Party', 'party_user', 'user_id', 'party_id');
+    }
     /**
      * Checking does user has any role
      * @param $roles
