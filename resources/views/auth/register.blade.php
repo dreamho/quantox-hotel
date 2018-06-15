@@ -27,7 +27,7 @@
 
         $.ajax({
             type: 'GET',
-            url: 'api/getroles',
+            url: 'api/roles',
             data: null,
             dataType: 'json',
             success: function(data){

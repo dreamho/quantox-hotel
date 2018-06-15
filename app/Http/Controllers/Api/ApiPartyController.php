@@ -155,11 +155,11 @@ class ApiPartyController extends Controller
         }
     }
 
-    public function join($party)
+    public function joinParty($id)
     {
-        // join user
-//        $party = Party::find($party);
-//        $user = auth()->user();
-//        $party->users()->attach();
+        $party = Party::find($id);
+        $user = auth()->user();
+        $party->users()->attach($user->id);
+        return new PartyResource($party);
     }
 }

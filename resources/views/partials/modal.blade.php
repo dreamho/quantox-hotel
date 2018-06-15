@@ -7,7 +7,7 @@
                 <!-- header -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h3 class="modal-title">Log In</h3>
+                    <h3 class="modal-title">Login or <a href="register">Register</a> if you don't have an account!</h3>
 
                     <button type="button" class="btn btn-danger" onclick="setUser('milos.mosic@quantox.com', 'milos123')">Admin</button>
                     <button type="button" class="btn btn-warning" onclick="setUser('peterp@mail.com', 'peter123')">Guest</button>

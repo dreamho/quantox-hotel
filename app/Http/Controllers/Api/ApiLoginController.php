@@ -38,8 +38,14 @@ class ApiLoginController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
         JWTAuth::setToken($token);
+        //$parties = "";
         $user = JWTAuth::authenticate();
-        return (new UserResource($user))->additional(['token' => $token]);
+        if($user->parties!=null){
+            foreach($user->parties as $party){
+                $parties[] = $party->id;
+            }
+        }
+        return (new UserResource($user))->additional(['token' => $token, 'parties' => $parties]);
     }
 
     /**
