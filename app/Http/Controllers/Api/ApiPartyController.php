@@ -148,7 +148,6 @@ class ApiPartyController extends Controller
             $party = Party::find($id);
             $party->songs()->detach();
             $party->delete();
-            //Party::destroy($id);
             return new JsonResponse($id);
         } catch (\Exception $exception){
             return new JsonResponse("Something went wrong", 400);

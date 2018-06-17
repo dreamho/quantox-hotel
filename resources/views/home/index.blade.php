@@ -107,45 +107,26 @@
             data: null,
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 var parties = data.data;
                 for (var i = 0; i < parties.length; i++) {
                     var div = $('<div class="col-md-6" id="'+ parties[i].id +'"></div>');
                     div.append('<div class="thumbnail"><img src="images/'+ parties[i].image +'"><div class="caption"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p><a onclick="joinParty('+ parties[i].id +')" class="btn btn-primary" role="button" id="btn-join-'+ parties[i].id +'">Join us</a></p><p>' + parties[i].tags + '</p></div></div>');
                     $('#parties').append(div);
                 }
-
+                    if(window.localStorage.getItem('parties')!=undefined){
+                        setJoinedParties();
+                    }
             },
             error: function (xhr) {
-                $('#error').empty();
-                var error = xhr.responseJSON.error;
-                switch (xhr.status) {
-                    case 400:
-                        $('#error').append("<p>" + error + "</p>");
-                        break;
-                    case 401:
-                        if (error != 'token_expired') {
-                            $('#error').append("<p>" + error + "</p>");
-                        }
-                        else {
-                            window.localStorage.removeItem("jwt-token");
-                            window.localStorage.removeItem("name");
-                            window.localStorage.removeItem("user_id");
-                            window.location = "/";
-                        }
-                        break;
-                    case 403:
-                        var error = xhr.responseJSON.error;
-                        $('#error').append("<p>" + error + "</p>");
-                        showLoginModal();
-                        break;
-                    case 422:
-                        var errors = xhr.responseJSON.errors;
-                        for (var i in errors) {
-                            $('#error').append("<p>" + errors[i][0] + "</p>");
-                        }
-                        break;
-                }
+                   $('#error').empty();
+                    var error = xhr.responseJSON.error;
+                    switch (xhr.status) {
+                        case 400:
+                        case 401:
+                        case 403:
+                            showLoginModal();
+                            break;
+                    }
             }
         });
 
@@ -160,19 +141,10 @@
                 },
                 success: function (data) {
                     var party = data.data;
-                    // $('#btn-join-' + party.id).removeClass('btn btn-primary').addClass('btn btn-success').html('Joined');
-                    // $('#btn-join-' + party.id).attr('onclick', '');
-                    var parties = window.localStorage.getItem('parties') + ',' + party.id;
-                    window.localStorage.setItem('parties', parties);
-                    var parties_array = parties.split(',');
-                    console.log(parties_array);
-                    console.log($('#' + 2).attr('id'));
-                    for(var i=0;i<parties_array.length;i++){
-                        if(parties_array[i] === $('#' + parties_array[i]).attr('id')){
-                            $('#btn-join-' + parties[i]).removeClass('btn btn-primary').addClass('btn btn-success').html('Joined');
-                            $('#btn-join-' + parties[i]).attr('onclick', '');
-                        }
-                    }
+                    $('#btn-join-' + party.id).removeClass('btn btn-primary').addClass('btn btn-success').html('Joined');
+                    $('#btn-join-' + party.id).attr('onclick', '');
+                    var parties = window.localStorage.getItem('parties')=='' ? window.localStorage.getItem('parties') + party.id : window.localStorage.getItem('parties') + "," + party.id;
+                    window.localStorage.setItem('parties', parties)
                 },
                 error: function (xhr) {
                     $('#error').empty();
@@ -188,6 +160,18 @@
             });
         }
 
+        function setJoinedParties(){
+            var parties = window.localStorage.getItem('parties');
+            var parties_array = parties.split(',');
+            for(var i=0;i<parties_array.length;i++){
+                console.log(parties_array[i]);
+                console.log($('#' + parties_array[i]).attr('id'));
+                if(parties_array[i] === $('#' + parties_array[i]).attr('id')){
+                    $('#btn-join-' + parties_array[i]).removeClass('btn btn-primary').addClass('btn btn-success').html('Joined');
+                    $('#btn-join-' + parties_array[i]).attr('onclick', '');
+                }
+            }
+        }
 
     </script>
 

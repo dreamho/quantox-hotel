@@ -48,7 +48,7 @@
                         window.location = "/";
                         break;
                     case "2":
-                        window.location = "/party";
+                        window.location = "/parties";
                         break;
                     case "3":
                         window.location = "/songs";
@@ -85,6 +85,7 @@
                             window.localStorage.removeItem("jwt-token");
                             window.localStorage.removeItem("name");
                             window.localStorage.removeItem("user_id");
+                            window.localStorage.removeItem("parties");
                             window.location = "/";
                             break;
                     }
