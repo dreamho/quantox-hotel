@@ -110,7 +110,7 @@
                 var parties = data.data;
                 for (var i = 0; i < parties.length; i++) {
                     var div = $('<div class="col-md-6" id="'+ parties[i].id +'"></div>');
-                    div.append('<div class="thumbnail"><img src="images/'+ parties[i].image +'"><div class="caption"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p><a onclick="joinParty('+ parties[i].id +')" class="btn btn-primary" role="button" id="btn-join-'+ parties[i].id +'">Join us</a></p><p>' + parties[i].tags + '</p></div></div>');
+                    div.append('<div class="thumbnail"><img src="images/'+ parties[i].image +'"><div class="caption"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p><a onclick="joinParty('+ parties[i].id +')" class="btn btn-primary" role="button" id="btn-join-'+ parties[i].id +'">Join us</a> <a onclick="startParty('+ parties[i].id +')" class="btn btn-default" role="button" id="btn-start-'+ parties[i].id +'">Start</a></p><p>' + parties[i].tags + '</p></div></div>');
                     $('#parties').append(div);
                 }
                     if(window.localStorage.getItem('parties')!=undefined){
@@ -164,13 +164,37 @@
             var parties = window.localStorage.getItem('parties');
             var parties_array = parties.split(',');
             for(var i=0;i<parties_array.length;i++){
-                console.log(parties_array[i]);
-                console.log($('#' + parties_array[i]).attr('id'));
                 if(parties_array[i] === $('#' + parties_array[i]).attr('id')){
                     $('#btn-join-' + parties_array[i]).removeClass('btn btn-primary').addClass('btn btn-success').html('Joined');
                     $('#btn-join-' + parties_array[i]).attr('onclick', '');
                 }
             }
+        }
+
+        function startParty(id){
+            $.ajax({
+                url: "api/parties/start/" + id,
+                type: "GET",
+                data: null,
+                dataType: 'json',
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Bearer " + getToken());
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (xhr) {
+                    $('#error').empty();
+                    //var error = xhr.responseJSON.error;
+                    switch (xhr.status) {
+                        case 400:
+                        case 401:
+                        case 403:
+                            showLoginModal();
+                            break;
+                    }
+                }
+            });
         }
 
     </script>

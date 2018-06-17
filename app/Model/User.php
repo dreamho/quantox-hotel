@@ -43,6 +43,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Model\Party', 'party_user', 'user_id', 'party_id');
     }
+
+    public function songs(){
+        return $this->belongsToMany('App\Model\Song', 'song_user', 'user_id', 'song_id')->withTimestamps();
+    }
     /**
      * Checking does user has any role
      * @param $roles

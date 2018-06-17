@@ -33,5 +33,6 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::post('parties/{id}', ['uses' => 'Api\ApiPartyController@updateParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
     Route::delete('parties/{id}', ['uses' => 'Api\ApiPartyController@deleteParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
     Route::get('parties/join/{id}', ['uses' => 'Api\ApiPartyController@joinParty', 'middleware' => 'roles', 'roles' => ['admin', 'guest']]);
+    Route::get('parties/start/{id}', ['uses' => 'Api\ApiPartyController@startParty', 'middleware' => 'roles', 'roles' => ['admin', 'party_maker']]);
 
 });

@@ -49,5 +49,12 @@ class UserTableSeeder extends Seeder
         $user->password = bcrypt('milos123');
         $user->save();
         $user->roles()->attach($role_admin);
+
+        $user = new User();
+        $user->name = 'Quantox Band';
+        $user->email = 'quantox.band@quantox.com';
+        $user->password = bcrypt('quantox123');
+        $user->save();
+        $user->roles()->attach($role_guest);
     }
 }

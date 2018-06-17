@@ -15,6 +15,7 @@ use App\Http\Requests\SaveParty;
 use App\Model\Song;
 use Illuminate\Http\JsonResponse;
 use App\Model\Party;
+use App\Model\User;
 use App\Http\Resources\Party as PartyResource;
 
 /**
@@ -160,5 +161,45 @@ class ApiPartyController extends Controller
         $user = auth()->user();
         $party->users()->attach($user->id);
         return new PartyResource($party);
+    }
+
+    public function startParty($id){
+        $party = Party::find($id);
+        $songs = $party->songs;
+        $users = $party->users;
+
+        $j = 0;
+        $saved_songs = [];
+         for($i = 0;$i < count($songs);$i++){
+             if($j == count($users)) $j = 0;
+            while($j < count($users)){
+                $performed_songs = $this->getArrayOfIds($users[$j]->songs);
+               if(!in_array($songs[$i]->id, $performed_songs)){
+                    $songs[$i]->users()->attach($users[$j]->id);
+                    $saved_songs[] = $songs[$i]->id;
+                    $j++;
+                    break;
+                }
+                else{
+                    $j++;
+               }
+            }   
+        }
+        
+        $quantox_band = User::find(5);
+        foreach($party->songs as $song){
+           if(!in_array($song->id, $saved_songs)){
+                $quantox_band->songs()->attach($song->id);
+           }
+        }
+        return $saved_songs;
+    }
+
+    public function getArrayOfIds($objects){
+        $array = [];
+        foreach($objects as $object){
+            $array[] = $object->id;
+        }
+        return $array;
     }
 }
