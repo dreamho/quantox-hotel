@@ -144,7 +144,7 @@
                     $('#btn-join-' + party.id).removeClass('btn btn-primary').addClass('btn btn-success').html('Joined');
                     $('#btn-join-' + party.id).attr('onclick', '');
                     var parties = window.localStorage.getItem('parties')=='' ? window.localStorage.getItem('parties') + party.id : window.localStorage.getItem('parties') + "," + party.id;
-                    window.localStorage.setItem('parties', parties)
+                    window.localStorage.setItem('parties', parties);
                 },
                 error: function (xhr) {
                     $('#error').empty();
