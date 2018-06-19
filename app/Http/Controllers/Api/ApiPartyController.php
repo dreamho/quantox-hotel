@@ -34,7 +34,6 @@ class ApiPartyController extends Controller
 
         $previous_party = Party::latest()->first();
         $previous_party_song = $previous_party ? $previous_party->songs()->latest()->first() : null;
-        //return $previous_party_song;
 
         try {
             $imageName = time() . '.' . $request->image->getClientOriginalExtension();
@@ -71,13 +70,13 @@ class ApiPartyController extends Controller
     }
 
     /**
-     *
+     * Get list of parties based on optional parameter date
      * @param $date
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getParties($date=null)
+    public function getParties($date = null)
     {
-        if(!isset($date)){
+        if (!isset($date)) {
             return PartyResource::collection(Party::all());
         }
         $current_date = date('Y-m-d');
@@ -128,8 +127,8 @@ class ApiPartyController extends Controller
             $party = Party::find($id);
             $party->description = $request->description;
             $party->tags = $request->tags;
-            if(isset($request->image)){
-                if(file_exists('images/' . $party->image)) {
+            if (isset($request->image)) {
+                if (file_exists('images/' . $party->image)) {
                     unlink('images/' . $party->image);
                 }
                 $imageName = time() . '.' . $request->image->getClientOriginalExtension();
@@ -144,17 +143,28 @@ class ApiPartyController extends Controller
         }
     }
 
-    public function deleteParty($id){
-        try{
+    /**
+     * Deleting a party by id and deleting all belonged songs in pivot table party_song
+     * @param $id
+     * @return JsonResponse
+     */
+    public function deleteParty($id)
+    {
+        try {
             $party = Party::find($id);
             $party->songs()->detach();
             $party->delete();
             return new JsonResponse($id);
-        } catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return new JsonResponse("Something went wrong", 400);
         }
     }
 
+    /**
+     * Joining logged user to the chosen party
+     * @param $id
+     * @return PartyResource
+     */
     public function joinParty($id)
     {
         $party = Party::find($id);
@@ -163,41 +173,54 @@ class ApiPartyController extends Controller
         return new PartyResource($party);
     }
 
-    public function startParty($id){
+    /**
+     * Starting a party and joining users to the predefined party playlist
+     * @param $id
+     * @return array
+     */
+    public function startParty($id)
+    {
         $party = Party::find($id);
         $songs = $party->songs;
         $users = $party->users;
 
         $j = 0;
         $saved_songs = [];
-         for($i = 0;$i < count($songs);$i++){
-             if($j == count($users)) $j = 0;
-            while($j < count($users)){
+        for ($i = 0; $i < count($songs); $i++) {
+            if ($j == count($users)) {
+                $j = 0;
+            }
+            while ($j < count($users)) {
                 $performed_songs = $this->getArrayOfIds($users[$j]->songs);
-               if(!in_array($songs[$i]->id, $performed_songs)){
+                if (!in_array($songs[$i]->id, $performed_songs)) {
                     $songs[$i]->users()->attach($users[$j]->id);
                     $saved_songs[] = $songs[$i]->id;
                     $j++;
                     break;
-                }
-                else{
+                } else {
                     $j++;
-               }
-            }   
+                }
+            }
         }
-        
+
         $quantox_band = User::find(5);
-        foreach($party->songs as $song){
-           if(!in_array($song->id, $saved_songs)){
+        foreach ($party->songs as $song) {
+            if (!in_array($song->id, $saved_songs)) {
                 $quantox_band->songs()->attach($song->id);
-           }
+            }
         }
         return $saved_songs;
     }
 
-    public function getArrayOfIds($objects){
+    /**
+     * Getting id's from objects array and creating a new array
+     * @param $objects
+     * @return array
+     */
+    public function getArrayOfIds($objects)
+    {
         $array = [];
-        foreach($objects as $object){
+        foreach ($objects as $object) {
             $array[] = $object->id;
         }
         return $array;
