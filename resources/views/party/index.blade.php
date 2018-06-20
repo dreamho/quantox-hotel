@@ -73,7 +73,7 @@
                     $('#success').append("<p>Saved successfully</p>");
                     var party = data.data;
                     var div = $('<div class="col-md-4" id="party-'+ party.id +'"></div>');
-                    div.append('<div class="thumbnail"><img id="image-'+ party.id +'" src="images/'+ party.image +'"><div class="caption" id="'+party.id+'"><h3>' + party.name + '</h3><p>Date: ' + party.date + '</p><p>Capacity: ' + party.capacity + '</p><p>Duration(hours): ' + party.length + '</p><p>' + party.description + '</p><p>' + party.tags + '</p><p><a href="#" onclick="getParty('+ party.id +')" class="btn btn-primary" role="button">Edit</a> <a href="#" class="btn btn-default" role="button">Delete</a></p></div></div>');
+                    div.append('<div class="thumbnail"><img id="image-'+ party.id +'" src="images/'+ party.image +'"><div class="caption" id="'+party.id+'"><h3>' + party.name + '</h3><p>Date: ' + party.date + '</p><p>Capacity: ' + party.capacity + '</p><p>Duration(hours): ' + party.length + '</p><p>' + party.description + '</p><p>' + party.tags + '</p><p><a href="#" onclick="getParty('+ party.id +')" class="btn btn-primary" role="button">Edit</a> <a href="#" class="btn btn-default" role="button">Delete</a> <a onclick="startParty('+ party.id +')" class="btn btn-success" style="float:right" role="button" id="btn-start-'+ party.id +'">Start</a></p></div></div>');
                     $('#parties').append(div);
                     clearMsg();
                 },
@@ -212,7 +212,7 @@
                 var parties = data.data;
                 for (var i = 0; i < parties.length; i++) {
                     var div = $('<div class="col-md-4" id="party-'+ parties[i].id +'"></div>');
-                    div.append('<div class="thumbnail"><img id="image-'+ parties[i].id +'" src="images/'+ parties[i].image +'"><div class="caption" id="'+parties[i].id+'"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p>' + parties[i].tags + '</p><p><a href="#" onclick="getParty('+ parties[i].id +')" class="btn btn-primary" role="button">Edit</a> <a href="#" onclick="deleteParty('+ parties[i].id +')" class="btn btn-default" role="button">Delete</a></p></div></div>');
+                    div.append('<div class="thumbnail"><img id="image-'+ parties[i].id +'" src="images/'+ parties[i].image +'"><div class="caption" id="'+parties[i].id+'"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p>' + parties[i].tags + '</p><p><a href="#" onclick="getParty('+ parties[i].id +')" class="btn btn-primary" role="button">Edit</a> <a href="#" onclick="deleteParty('+ parties[i].id +')" class="btn btn-default" role="button">Delete</a> <a onclick="startParty('+ parties[i].id +')" class="btn btn-success party-maker" style="float:right" role="button" id="btn-start-'+ parties[i].id +'">Start</a></p></div></div>');
                     $('#parties').append(div);
                 }
 

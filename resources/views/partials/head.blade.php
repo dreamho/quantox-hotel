@@ -144,6 +144,32 @@
                 }
             });
         }
+
+        function startParty(id){
+            $.ajax({
+                url: "api/parties/start/" + id,
+                type: "GET",
+                data: null,
+                dataType: 'json',
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Bearer " + getToken());
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (xhr) {
+                    $('#error').empty();
+                    //var error = xhr.responseJSON.error;
+                    switch (xhr.status) {
+                        case 400:
+                        case 401:
+                        case 403:
+                            showLoginModal();
+                            break;
+                    }
+                }
+            });
+        }
     </script>
 
 </head>
