@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api;
 
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EditParty;
 use App\Http\Requests\SaveParty;
@@ -31,7 +30,6 @@ class ApiPartyController extends Controller
      */
     public function saveParty(SaveParty $request)
     {
-
         $previous_party = Party::latest()->first();
         $previous_party_song = $previous_party ? $previous_party->songs()->latest()->first() : null;
 
@@ -183,7 +181,6 @@ class ApiPartyController extends Controller
         $party = Party::find($id);
         $songs = $party->songs;
         $users = $party->users;
-
         $j = 0;
         $saved_songs = [];
         for ($i = 0; $i < count($songs); $i++) {
@@ -202,11 +199,10 @@ class ApiPartyController extends Controller
                 }
             }
         }
-
-        $quantox_band = User::find(5);
+        $band = User::find(5);
         foreach ($party->songs as $song) {
             if (!in_array($song->id, $saved_songs)) {
-                $quantox_band->songs()->attach($song->id);
+                $band->songs()->attach($song->id);
             }
         }
         return $saved_songs;

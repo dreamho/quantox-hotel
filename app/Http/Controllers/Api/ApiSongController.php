@@ -81,12 +81,11 @@ class ApiSongController extends Controller
      */
     public function deleteSong($id)
     {
-        try{
+        try {
             SongModel::destroy($id);
             return new JsonResponse($id);
-        } catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return new JsonResponse("Something went wrong", 400);
         }
-
     }
 }

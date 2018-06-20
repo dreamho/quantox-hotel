@@ -6,6 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class EditParty extends FormRequest
 {
+    public $description;
+    public $tags;
+    public $image;
+
     /**
      * Determine if the user is authorized to make this request.
      *

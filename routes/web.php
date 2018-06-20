@@ -16,5 +16,4 @@ Route::get('songs', 'SongController@index');
 Route::get('register', 'AuthController@showRegisterForm');
 Route::get('login', 'AuthController@showLoginForm');
 Route::get('parties', 'HomeController@showPartyForm');
-
 Route::get('test', 'HomeController@test');

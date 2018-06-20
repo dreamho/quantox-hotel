@@ -11,7 +11,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLogin;
 use App\Http\Resources\User as UserResource;
-use App\Model\Party;
 use Validator;
 use JWTFactory;
 use JWTAuth;
@@ -39,9 +38,9 @@ class ApiLoginController extends Controller
         }
         JWTAuth::setToken($token);
         $user = JWTAuth::authenticate();
-       $parties = [];
-       if($user->parties!=null){
-            foreach($user->parties as $party){
+        $parties = [];
+        if ($user->parties != null) {
+            foreach ($user->parties as $party) {
                 $parties[] = $party->id;
             }
         }

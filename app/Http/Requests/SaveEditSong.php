@@ -10,6 +10,11 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class SaveEditSong extends FormRequest
 {
+    public $artist;
+    public $track;
+    public $link;
+    public $length;
+
     /**
      * Determine if the user is authorized to make this request.
      *

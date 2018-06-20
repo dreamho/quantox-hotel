@@ -10,6 +10,14 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class SaveParty extends FormRequest
 {
+    public $name;
+    public $description;
+    public $date;
+    public $tags;
+    public $capacity;
+    public $length;
+    public $image;
+
     /**
      * Determine if the user is authorized to make this request.
      *

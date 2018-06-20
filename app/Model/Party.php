@@ -10,11 +10,21 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Party extends Model
 {
+    public $name;
+    public $description;
+    public $date;
+    public $tags;
+    public $capacity;
+    public $length;
+    public $image;
+    public $user_id;
+
     /**
      *  Party - Song (many to many relationship)
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function songs(){
+    public function songs()
+    {
         return $this->belongsToMany('App\Model\Song', 'party_song', 'party_id', 'song_id')->withTimestamps();
     }
 

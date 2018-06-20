@@ -19,7 +19,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -28,14 +30,16 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
      * Relationship many to many with roles table
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function roles(){
+    public function roles()
+    {
         return $this->belongsToMany('App\Model\Role', 'user_role', 'user_id', 'role_id');
     }
 
@@ -44,23 +48,26 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Model\Party', 'party_user', 'user_id', 'party_id');
     }
 
-    public function songs(){
+    public function songs()
+    {
         return $this->belongsToMany('App\Model\Song', 'song_user', 'user_id', 'song_id')->withTimestamps();
     }
+
     /**
      * Checking does user has any role
      * @param $roles
      * @return bool
      */
-    public function hasAnyRole($roles){
-        if(is_array($roles)){
-            foreach($roles as $role){
-                if($this->hasRole($role)){
+    public function hasAnyRole($roles)
+    {
+        if (is_array($roles)) {
+            foreach ($roles as $role) {
+                if ($this->hasRole($role)) {
                     return true;
                 }
             }
-        }else{
-            if($this->hasRole($role)){
+        } else {
+            if ($this->hasRole($roles)) {
                 return true;
             }
         }
@@ -72,10 +79,12 @@ class User extends Authenticatable
      * @param $role
      * @return bool
      */
-    public function hasRole($role){
-        if($this->roles()->where('name', $role)->first()){
+    public function hasRole($role)
+    {
+        if ($this->roles()->where('name', $role)->first()) {
             return true;
         }
         return false;
     }
 }
+
