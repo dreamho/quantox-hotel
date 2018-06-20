@@ -137,7 +137,7 @@
         function joinParty(id){
             $.ajax({
                 url: "api/parties/join/" + id,
-                type: "GET",
+                type: "POST",
                 data: null,
                 dataType: 'json',
                 beforeSend: function(request) {
