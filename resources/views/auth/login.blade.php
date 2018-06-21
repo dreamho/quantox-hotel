@@ -29,10 +29,12 @@
                 success: function (data) {
                     var token = data.token ? data.token : null;
                     var name = data.data.name ? data.data.name : data.data.email;
-                    var user_id = data.data.id ? data.data.id : null;
+                    var parties = data.parties ? data.parties : null;
+                    var role = data.data.role ? data.data.role : null;
                     window.localStorage.setItem('jwt-token', token);
                     window.localStorage.setItem('name', name);
-                    window.localStorage.setItem('user_id', user_id);
+                    window.localStorage.setItem('parties', parties);
+                    window.localStorage.setItem('role', role);
 
                     switch (window.localStorage.getItem('user_id')) {
                         case "1":

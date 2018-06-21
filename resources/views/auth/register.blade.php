@@ -54,11 +54,11 @@
                 success: function (data){
                 var token = data.token ? data.token : null;
                 var name = data.data.name ? data.data.name : data.data.email;
-                var user_id = data.data.id ? data.data.id : null;
-
+                var role = data.data.role ? data.data.role : null;
                 window.localStorage.setItem('jwt-token', token);
                 window.localStorage.setItem('name', name);
-                window.localStorage.setItem('user_id', user_id);
+                window.localStorage.setItem('parties', '');
+                window.localStorage.setItem('role', role);
 
                 window.location = "/";
                 },

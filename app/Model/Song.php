@@ -10,11 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Song extends Model
 {
-    public $artist;
-    public $track;
-    public $link;
-    public $length;
-
     /**
      * Song - Party (many to many relationship)
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

@@ -113,7 +113,7 @@
                     div.append('<div class="thumbnail"><img src="images/'+ parties[i].image +'"><div class="caption"><h3>' + parties[i].name + '</h3><p>Date: ' + parties[i].date + '</p><p>Capacity: ' + parties[i].capacity + '</p><p>Duration(hours): ' + parties[i].length + '</p><p>' + parties[i].description + '</p><p><a onclick="joinParty('+ parties[i].id +')" class="btn btn-primary" role="button" id="btn-join-'+ parties[i].id +'">Join us</a> <a onclick="startParty('+ parties[i].id +')" class="btn btn-default party-maker" style="display:none" role="button" id="btn-start-'+ parties[i].id +'">Start</a></p><p>' + parties[i].tags + '</p></div></div>');
                     $('#parties').append(div);
                 }
-                if(window.localStorage.getItem('role')=='party_maker'){
+                if(hasRole('party_maker')){
                     $('.party-maker').show();
                 }
 
@@ -133,6 +133,18 @@
                     }
             }
         });
+
+        function hasRole(role){
+            var roles = window.localStorage.getItem('role').split(',');
+            for(var i=0;i<roles.length;i++){
+                if(roles[i] == role){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        }
 
         function joinParty(id){
             $.ajax({

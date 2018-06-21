@@ -10,15 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Party extends Model
 {
-    public $name;
-    public $description;
-    public $date;
-    public $tags;
-    public $capacity;
-    public $length;
-    public $image;
-    public $user_id;
-
     /**
      *  Party - Song (many to many relationship)
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

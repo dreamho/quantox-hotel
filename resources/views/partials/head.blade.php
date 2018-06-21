@@ -35,13 +35,13 @@
             request('/api/login', 'POST', user, function (data){
                 var token = data.token ? data.token : null;
                 var name = data.data.name ? data.data.name : data.data.email;
-                var user_id = data.data.id ? data.data.id : null;
+                var role = data.data.role ? data.data.role : null;
                 var parties = data.parties ? data.parties : null;
 
                 window.localStorage.setItem('jwt-token', token);
                 window.localStorage.setItem('name', name);
-                window.localStorage.setItem('user_id', user_id);
                 window.localStorage.setItem('parties', parties);
+                window.localStorage.setItem('role', role);
 
                 switch(window.localStorage.getItem('user_id')){
                     case "1":
@@ -73,7 +73,7 @@
                     if (xhr.status==200){
                         window.localStorage.removeItem("jwt-token");
                         window.localStorage.removeItem("name");
-                        window.localStorage.removeItem("user_id");
+                        window.localStorage.removeItem("role");
                         window.localStorage.removeItem("parties");
                         window.location = "/";
                     }
@@ -84,7 +84,7 @@
                         case 401:
                             window.localStorage.removeItem("jwt-token");
                             window.localStorage.removeItem("name");
-                            window.localStorage.removeItem("user_id");
+                            window.localStorage.removeItem("role");
                             window.localStorage.removeItem("parties");
                             window.location = "/";
                             break;
@@ -124,7 +124,7 @@
                             $('#error').append("<p>"+error+"</p>");
                             window.localStorage.removeItem("jwt-token");
                             window.localStorage.removeItem("name");
-                            window.localStorage.removeItem("user_id");
+                            //window.localStorage.removeItem("user_id");
                             showLoginModal();
                             break;
                         case 403:
