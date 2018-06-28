@@ -17,7 +17,7 @@ class PartyTableSeeder extends Seeder
         $party = new \App\Model\Party();
         $party->name = 'Opening night';
         $party->description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer maximus suscipit finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus.';
-        $party->date = '2018-6-20';
+        $party->date = '2018-7-20';
         $party->tags = 'party,hotel,fun';
         $party->capacity = 200;
         $party->length = 2.5;
@@ -34,7 +34,7 @@ class PartyTableSeeder extends Seeder
         $party = new \App\Model\Party();
         $party->name = 'Karaoke night';
         $party->description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer maximus suscipit finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus.';
-        $party->date = '2018-6-21';
+        $party->date = '2018-7-21';
         $party->tags = 'party,hotel,fun';
         $party->capacity = 200;
         $party->length = 2.5;

@@ -27,7 +27,7 @@ class Party extends JsonResource
             'capacity' => $this->capacity,
             'length' => $this->length,
             'image' => $this->image,
-            'joined' => $this->isJoined($request)
+            //'joined' => $this->isJoined($request)
         ];
     }
 }

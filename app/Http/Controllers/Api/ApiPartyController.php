@@ -181,43 +181,37 @@ class ApiPartyController extends Controller
         $party = Party::find($id);
         $songs = $party->songs;
         $users = $party->users;
-        $j = 0;
-        $saved_songs = [];
-        for ($i = 0; $i < count($songs); $i++) {
-            if ($j == count($users)) {
-                $j = 0;
-            }
-            while ($j < count($users)) {
-                $performed_songs = $this->getArrayOfIds($users[$j]->songs);
-                if (!in_array($songs[$i]->id, $performed_songs)) {
-                    $songs[$i]->users()->attach($users[$j]->id);
-                    $saved_songs[] = $songs[$i]->id;
-                    $j++;
-                    break;
-                } else {
-                    $j++;
-                }
+        $user_assigned_songs = [];
+        for ($i=0; $i < count($users); $i++) {
+            $performed_songs = $this->getArrayOfIds($users[$i]->songs);
+            for($j=0; $j < count($songs); $j++) {
+                if ($songs[$j]->id == null) continue;
+                if (in_array($songs[$j]->id, $performed_songs)) continue;
+                $songs[$j]->users()->attach($users[$i]->id);
+                $user_assigned_songs[] = $songs[$j]->id;
+                $songs[$j]->id = null;
+                break; 
             }
         }
         $band = User::find(5);
         foreach ($party->songs as $song) {
-            if (!in_array($song->id, $saved_songs)) {
+            if (!in_array($song->id, $user_assigned_songs)) {
                 $band->songs()->attach($song->id);
             }
         }
-        return $saved_songs;
+        return $user_assigned_songs;
     }
 
     /**
-     * Getting id's from objects array and creating a new array
-     * @param $objects
+     * Getting id's from song objects array and creating a new array
+     * @param $songs
      * @return array
      */
-    public function getArrayOfIds($objects)
+    public function getArrayOfIds($songs)
     {
         $array = [];
-        foreach ($objects as $object) {
-            $array[] = $object->id;
+        foreach ($songs as $song) {
+            $array[] = $song->id;
         }
         return $array;
     }
