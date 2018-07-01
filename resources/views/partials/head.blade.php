@@ -96,10 +96,12 @@
         function getToken() {
             if (token) {
                 return token;
+            } else if (window.localStorage.getItem('jwt-token')!=null){
+                var token = window.localStorage.getItem('jwt-token');
+                return token;
+            } else{
+                showLoginModal();
             }
-            var token = window.localStorage.getItem('jwt-token');
-            return token;
-            showLoginModal();
         }
 
         function request(url, method, data, successCallback) {
@@ -155,7 +157,8 @@
                     request.setRequestHeader("Authorization", "Bearer " + getToken());
                 },
                 success: function (data) {
-                    console.log(data);
+                    var party = data.data;
+                    $('#btn-start-' + party.id).removeClass('btn btn-default').addClass('btn btn-success').html('Started');
                 },
                 error: function (xhr) {
                     $('#error').empty();

@@ -202,7 +202,7 @@ class ApiPartyController extends Controller
             }
             $party->started = true;
             $party->save();
-            return new JsonResponse($party->started, 200);           
+            return new PartyResource($party);           
         } catch (\Exception $exception) {
             return new JsonResponse("Something went wrong", 400);
         }
