@@ -25,6 +25,7 @@ class CreatePartiesTable extends Migration
             $table->integer('capacity');
             $table->decimal('length', 4, 2);
             $table->string('image', 1024);
+            $table->boolean('started')->default(false);
             $table->unsignedInteger('user_id');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');

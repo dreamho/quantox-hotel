@@ -182,24 +182,30 @@ class ApiPartyController extends Controller
         $songs = $party->songs;
         $users = $party->users;
         $user_assigned_songs = [];
-        for ($i=0; $i < count($users); $i++) {
-            $performed_songs = $this->getArrayOfIds($users[$i]->songs);
-            for($j=0; $j < count($songs); $j++) {
-                if ($songs[$j]->id == null) continue;
-                if (in_array($songs[$j]->id, $performed_songs)) continue;
-                $songs[$j]->users()->attach($users[$i]->id);
-                $user_assigned_songs[] = $songs[$j]->id;
-                $songs[$j]->id = null;
-                break; 
+        try {
+            for ($i=0; $i < count($users); $i++) {
+                $performed_songs = $this->getArrayOfIds($users[$i]->songs);
+                for($j=0; $j < count($songs); $j++) {
+                    if ($songs[$j]->id == null) continue;
+                    if (in_array($songs[$j]->id, $performed_songs)) continue;
+                    $party->songs()->updateExistingPivot($songs[$j]->id, ['user_id' => $users[$i]->id]);
+                    $user_assigned_songs[] = $songs[$j]->id;
+                    $songs[$j]->id = null;
+                    break; 
+                }
             }
-        }
-        $band = User::find(5);
-        foreach ($party->songs as $song) {
-            if (!in_array($song->id, $user_assigned_songs)) {
-                $band->songs()->attach($song->id);
+            $band = User::find(5);
+            foreach ($party->songs as $song) {
+                if (!in_array($song->id, $user_assigned_songs)) {
+                    $party->songs()->updateExistingPivot($song->id, ['user_id' => $band->id]);
+                }
             }
+            $party->started = true;
+            $party->save();
+            return new JsonResponse($party->started, 200);           
+        } catch (\Exception $exception) {
+            return new JsonResponse("Something went wrong", 400);
         }
-        return $user_assigned_songs;
     }
 
     /**

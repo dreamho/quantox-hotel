@@ -17,7 +17,7 @@ class Party extends Model
      */
     public function songs()
     {
-        return $this->belongsToMany('App\Model\Song', 'party_song', 'party_id', 'song_id')->withTimestamps();
+        return $this->belongsToMany('App\Model\Song', 'party_song', 'party_id', 'song_id')->withPivot('user_id')->withTimestamps();
     }
 
     /**
