@@ -16,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use App\Model\Party;
 use App\Model\User;
 use App\Http\Resources\Party as PartyResource;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ApiPartyController
@@ -25,6 +26,7 @@ class ApiPartyController extends Controller
 {
     /**
      * Saving new Party
+     *
      * @param SaveParty $request
      * @return PartyResource|JsonResponse
      */
@@ -69,6 +71,7 @@ class ApiPartyController extends Controller
 
     /**
      * Get list of parties based on optional parameter date
+     *
      * @param $date
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
@@ -84,10 +87,11 @@ class ApiPartyController extends Controller
 
     /**
      * Creating list of songs for the party
-     * @param $start
-     * @param $songs
-     * @param $duration
-     * @param $total
+     *
+     * @param int $start
+     * @param Song $songs
+     * @param float $duration
+     * @param float $total
      * @param $array
      * @param string $last_song
      * @return array
@@ -115,7 +119,8 @@ class ApiPartyController extends Controller
 
     /**
      * Update party description, tags and image
-     * @param $id
+     *
+     * @param int $id
      * @param EditParty $request
      * @return PartyResource|JsonResponse
      */
@@ -143,7 +148,8 @@ class ApiPartyController extends Controller
 
     /**
      * Deleting a party by id and deleting all belonged songs in pivot table party_song
-     * @param $id
+     *
+     * @param int $id
      * @return JsonResponse
      */
     public function deleteParty($id)
@@ -160,7 +166,8 @@ class ApiPartyController extends Controller
 
     /**
      * Joining logged user to the chosen party
-     * @param $id
+     *
+     * @param int $id
      * @return PartyResource
      */
     public function joinParty($id)
@@ -173,38 +180,41 @@ class ApiPartyController extends Controller
 
     /**
      * Starting a party and joining users to the predefined party playlist
-     * @param $id
-     * @return array
+     *
+     * @param int $id
+     * @return PartyResource|JsonResponse
      */
     public function startParty($id)
     {
         $party = Party::find($id);
         $songs = $party->songs;
-        //return $songs;
         $users = $party->users;
-        $user_assigned_songs = [];
+        $band = User::find(5);
+        foreach ($party->songs as $song) {
+            $party->songs()->updateExistingPivot($song->id, ['user_id' => $band->id]);
+        }
         try {
             for ($i=0; $i < count($users); $i++) {
                 $performed_songs = $this->getArrayOfIds($users[$i]->songs);
-                //return $performed_songs;
-                for($j=0; $j < count($songs); $j++) {
-                    if ($songs[$j]->id == null) continue;
-                    if (in_array($songs[$j]->id, $performed_songs)) continue;
-                    $party->songs()->updateExistingPivot($songs[$j]->id, ['user_id' => $users[$i]->id]);
-                    $user_assigned_songs[] = $songs[$j]->id;
+                for ($j=0; $j < count($songs); $j++) {
+                    if ($songs[$j]->id == null) {
+                        continue;
+                    }
+                    if (in_array($songs[$j]->id, $performed_songs)) {
+                        continue;
+                    }
+                    DB::table('party_song')
+                        ->where('party_id', $party->id)
+                        ->where('song_id', $songs[$j]->id)
+                        ->limit(1)
+                        ->update(['user_id' => $users[$i]->id]);
                     $songs[$j]->id = null;
-                    break; 
-                }
-            }
-            $band = User::find(5);
-            foreach ($party->songs as $song) {
-                if (!in_array($song->id, $user_assigned_songs)) {
-                    $party->songs()->updateExistingPivot($song->id, ['user_id' => $band->id]);
+                    break;
                 }
             }
             $party->started = true;
             $party->save();
-            return new PartyResource($party);           
+            return new PartyResource($party);
         } catch (\Exception $exception) {
             return new JsonResponse("Something went wrong", 400);
         }
@@ -212,7 +222,8 @@ class ApiPartyController extends Controller
 
     /**
      * Getting id's from song objects array and creating a new array
-     * @param $songs
+     *
+     * @param Song $songs
      * @return array
      */
     public function getArrayOfIds($songs)
