@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function songs()
     {
-        return $this->belongsToMany('App\Model\Song', 'song_user', 'user_id', 'song_id')->withTimestamps();
+        return $this->belongsToMany('App\Model\Song', 'party_song', 'user_id', 'song_id');
     }
 
     /**

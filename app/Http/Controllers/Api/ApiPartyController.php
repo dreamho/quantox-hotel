@@ -180,11 +180,13 @@ class ApiPartyController extends Controller
     {
         $party = Party::find($id);
         $songs = $party->songs;
+        //return $songs;
         $users = $party->users;
         $user_assigned_songs = [];
         try {
             for ($i=0; $i < count($users); $i++) {
                 $performed_songs = $this->getArrayOfIds($users[$i]->songs);
+                //return $performed_songs;
                 for($j=0; $j < count($songs); $j++) {
                     if ($songs[$j]->id == null) continue;
                     if (in_array($songs[$j]->id, $performed_songs)) continue;
